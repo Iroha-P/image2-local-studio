@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Image2 Local Studio</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="panel">
+        <div class="brand">
+          <div>
+            <p class="eyebrow">GPT Image 2</p>
+            <h1>Image2 Local Studio</h1>
+          </div>
+          <span id="statusPill" class="status">未配置</span>
+        </div>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>API</h2>
+            <button id="saveConfigBtn" class="ghost-button" type="button">保存</button>
+          </div>
+          <label>
+            API Key
+            <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..." />
+          </label>
+          <div class="inline-actions">
+            <button id="clearKeyBtn" class="subtle-button" type="button">清除 Key</button>
+            <span id="configHint"></span>
+          </div>
+          <label>
+            API Base
+            <input id="apiBase" type="url" />
+          </label>
+          <label>
+            模型
+            <input id="model" type="text" />
+          </label>
+          <label>
+            翻译模型
+            <input id="translate_model" type="text" />
+          </label>
+        </section>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>尺寸与参数</h2>
+            <button id="resetParamsBtn" class="subtle-button" type="button">重置</button>
+          </div>
+          <label>
+            官方原生尺寸
+            <select id="size">
+              <option value="auto">auto</option>
+              <option value="1024x1024">1K 方图 1024x1024</option>
+              <option value="1024x1536">1K 竖图 1024x1536</option>
+              <option value="1536x1024">1K 横图 1536x1024</option>
+            </select>
+          </label>
+          <label>
+            最终导出尺寸
+            <select id="final_size">
+              <option value="native">原生保存</option>
+              <option value="1024x1024">1K 方图 1024x1024</option>
+              <option value="2048x2048">2K 方图 2048x2048</option>
+              <option value="4096x4096">4K 方图 4096x4096</option>
+              <option value="2048x3072">2K 竖图 2048x3072</option>
+              <option value="3072x2048">2K 横图 3072x2048</option>
+              <option value="4096x6144">4K 竖图 4096x6144</option>
+              <option value="6144x4096">4K 横图 6144x4096</option>
+              <option value="custom">自定义超分</option>
+            </select>
+          </label>
+          <div class="grid-two custom-size-row">
+            <label>
+              自定义宽
+              <input id="custom_width" type="number" min="256" max="8192" step="64" value="4096" />
+            </label>
+            <label>
+              自定义高
+              <input id="custom_height" type="number" min="256" max="8192" step="64" value="4096" />
+            </label>
+          </div>
+          <div class="grid-two">
+            <label>
+              数量
+              <input id="count" type="number" min="1" max="4" value="1" />
+            </label>
+            <label>
+              超分算法
+              <select id="upscale_kernel">
+                <option value="lanczos3">lanczos3</option>
+                <option value="mks2021">mks2021</option>
+                <option value="cubic">cubic</option>
+                <option value="nearest">nearest</option>
+              </select>
+            </label>
+            <label>
+              质量
+              <select id="quality">
+                <option value="auto">auto</option>
+                <option value="low">low</option>
+                <option value="medium">medium</option>
+                <option value="high">high</option>
+              </select>
+            </label>
+            <label>
+              背景
+              <select id="background">
+                <option value="auto">auto</option>
+                <option value="transparent">transparent</option>
+                <option value="opaque">opaque</option>
+              </select>
+            </label>
+            <label>
+              格式
+              <select id="output_format">
+                <option value="png">png</option>
+                <option value="jpeg">jpeg</option>
+                <option value="webp">webp</option>
+              </select>
+            </label>
+            <label>
+              JPEG/WebP 质量
+              <input id="output_compression" type="number" min="1" max="100" value="100" />
+            </label>
+          </div>
+          <label>
+            审核
+            <select id="moderation">
+              <option value="auto">auto</option>
+              <option value="low">low</option>
+            </select>
+          </label>
+          <p class="helper-text">4K 和自定义尺寸会先按官方原生尺寸生成，再在本机保存时超分。</p>
+        </section>
+
+        <section class="section skill-section">
+          <div class="section-title">
+            <h2>Prompt Skill</h2>
+            <button id="applySkillBtn" class="ghost-button" type="button">调用</button>
+          </div>
+          <label>
+            内置/自定义预设
+            <select id="presetSelect"></select>
+          </label>
+          <img id="skillPreview" class="skill-preview" src="/skill-previews/default.svg" alt="Skill 预览图" />
+          <div class="skill-actions">
+            <button id="newSkillBtn" class="subtle-button" type="button">新增</button>
+            <button id="saveSkillBtn" class="subtle-button" type="button">保存 Skill</button>
+            <button id="deleteSkillBtn" class="subtle-button danger" type="button">删除</button>
+            <button id="syncSkillBtn" class="subtle-button" type="button">同步仓库</button>
+            <button id="translateSkillBtn" class="subtle-button" type="button">翻译中文</button>
+            <button id="resetSkillBtn" class="subtle-button danger" type="button">重置 Skill</button>
+          </div>
+          <label>
+            名称
+            <input id="skillName" type="text" />
+          </label>
+          <label>
+            说明
+            <input id="skillDescription" type="text" />
+          </label>
+          <label>
+            预览图 URL
+            <input id="skillPreviewUrl" type="text" />
+          </label>
+          <label>
+            Skill Prompt
+            <textarea id="skillPrompt" rows="7"></textarea>
+          </label>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <form id="generateForm" class="composer">
+          <textarea id="prompt" rows="8" placeholder="描述你想生成的图片。可以先选择一个 Skill，点击调用，再替换里面的主题、风格、镜头和细节。"></textarea>
+          <div class="composer-actions">
+            <button id="generateBtn" class="primary-button" type="submit">生成图片</button>
+            <button id="copyPromptBtn" class="ghost-button" type="button">复制提示词</button>
+            <span id="message"></span>
+          </div>
+        </form>
+
+        <div class="wall-header">
+          <div>
+            <p class="eyebrow">本地图片墙</p>
+            <h2>已保存图片</h2>
+          </div>
+          <button id="refreshBtn" class="ghost-button" type="button">刷新</button>
+        </div>
+        <div id="imageWall" class="image-wall"></div>
+      </section>
+    </main>
+
+    <dialog id="previewDialog">
+      <button id="closePreviewBtn" class="close-button" type="button">关闭</button>
+      <img id="previewImage" alt="预览图" />
+      <p id="previewPrompt"></p>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

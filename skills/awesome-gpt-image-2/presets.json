@@ -1,0 +1,42 @@
+{
+  "source": "https://github.com/YouMind-OpenLab/awesome-gpt-image-2",
+  "license": "CC BY 4.0",
+  "attribution": "Inspired by YouMind OpenLab's curated GPT Image 2 prompt collection. Local presets are adapted summaries, not a full mirror of the repository.",
+  "presets": [
+    {
+      "id": "product-poster",
+      "name": "产品海报",
+      "description": "适合电商主图、海报、品牌物料。替换产品、材质、卖点和背景。",
+      "preview": "/skill-previews/product.svg",
+      "prompt": "Create a polished product advertising image for [产品名称]. Show the product clearly as the hero subject, with [材质/颜色] details, a clean premium background, controlled studio lighting, subtle reflections, realistic shadows, and space for headline text. Style: high-end commercial photography, sharp focus, balanced composition."
+    },
+    {
+      "id": "character-design",
+      "name": "角色设定",
+      "description": "适合人物、IP、游戏角色和头像设定。",
+      "preview": "/skill-previews/character.svg",
+      "prompt": "Create a detailed character concept image of [角色]. Include distinctive clothing, accessories, facial expression, pose, color palette, and personality cues. Use cinematic lighting, clean silhouette, rich texture detail, and a background that supports the story without distracting from the character."
+    },
+    {
+      "id": "scene-space",
+      "name": "场景空间",
+      "description": "适合室内、建筑、展览、商业空间和氛围图。",
+      "preview": "/skill-previews/space.svg",
+      "prompt": "Create an immersive scene of [空间/地点]. Include architectural layout, materials, lighting direction, foreground and background layers, realistic scale, and human-friendly details. Style: editorial architectural visualization, natural light, tactile surfaces, coherent color palette."
+    },
+    {
+      "id": "social-cover",
+      "name": "社媒封面",
+      "description": "适合小红书、公众号、视频封面和活动视觉。",
+      "preview": "/skill-previews/social.svg",
+      "prompt": "Design a social media cover image about [主题]. Use a strong central visual, readable composition, vibrant but tasteful colors, high contrast focal point, and room for title text. Make it modern, scroll-stopping, clean, and suitable for a thumbnail."
+    },
+    {
+      "id": "icon-asset",
+      "name": "图标资产",
+      "description": "适合应用图标、工具图标、UI 资产。",
+      "preview": "/skill-previews/icon.svg",
+      "prompt": "Create a clean app icon for [应用/功能]. Use a simple recognizable symbol, crisp edges, balanced negative space, subtle depth, and a professional color palette. Centered composition, no text, suitable for small sizes, high contrast on light and dark backgrounds."
+    }
+  ]
+}

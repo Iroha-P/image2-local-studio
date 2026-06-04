@@ -1,0 +1,18 @@
+{
+  "name": "image2-local-studio",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local GPT Image 2 API tool with a control panel, editable prompt skills, and image wall.",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "sync-skills": "node scripts/sync-skills.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "sharp": "^0.34.2"
+  }
+}

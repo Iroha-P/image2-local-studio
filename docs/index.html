@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Image2 Local Studio</title>
+    <style>
+      :root {
+        --ink: #242424;
+        --muted: #665f56;
+        --line: #d9d0c3;
+        --accent: #2f6f73;
+        --warm: #b45f3c;
+        --paper: #fffaf2;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: linear-gradient(135deg, #f5f2ec 0%, #e8f0ee 52%, #f7eadf 100%);
+        font-family: "Segoe UI", system-ui, sans-serif;
+      }
+
+      main {
+        width: min(1100px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 56px 0;
+      }
+
+      .hero {
+        display: grid;
+        gap: 22px;
+        padding-bottom: 42px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        color: var(--warm);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      h1 {
+        max-width: 820px;
+        margin: 0;
+        font-size: clamp(36px, 8vw, 76px);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 19px;
+        line-height: 1.65;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .button {
+        display: inline-grid;
+        place-items: center;
+        min-height: 42px;
+        padding: 0 18px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      .primary {
+        color: #fff;
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        min-height: 150px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, .86);
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+
+      p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      code {
+        padding: 2px 6px;
+        border-radius: 5px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">GPT Image 2 本地生图工具</p>
+        <h1>Image2 Local Studio</h1>
+        <p class="lead">一个可一键启动的本地图片生成工作台：支持官方原生尺寸、4K/自定义超分、图片墙、API 配置保存，以及可同步和翻译的中文 Prompt Skill 库。</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/">查看 GitHub 仓库</a>
+          <a class="button" href="../README.md">使用说明</a>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>本地 API</h2>
+          <p>API Key 保存在本机，浏览器只请求本地 Node 服务。运行 <code>start.bat</code> 后访问 <code>localhost:8787</code>。</p>
+        </article>
+        <article class="card">
+          <h2>尺寸与超分</h2>
+          <p>按 OpenAI 官方尺寸生成，再用本地 <code>sharp</code> 保存为 2K、4K 或自定义尺寸。</p>
+        </article>
+        <article class="card">
+          <h2>中文 Skill</h2>
+          <p>同步 YouMind 中文 README，并接入 EvoLinkAI 场景。英文场景可用保存的 OpenAI Key 一键翻译为中文。</p>
+        </article>
+        <article class="card">
+          <h2>图片墙</h2>
+          <p>生成结果自动保存到本地图片墙，支持预览、下载和删除。</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
