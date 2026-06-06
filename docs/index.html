@@ -304,6 +304,41 @@
       border-top: 1px solid var(--line);
       font-size: 14px;
     }
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .preview-shot {
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+    .preview-shot img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: #050507;
+    }
+    .preview-shot figcaption {
+      min-height: 74px;
+      padding: 13px 15px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    .preview-shot strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+    }
+    .preview-note {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
     figure { margin: 0; }
 
     .flow {
@@ -379,7 +414,7 @@
       h1 { font-size: 48px; }
       h2 { font-size: 30px; }
       section { padding: 58px 20px; }
-      .feature-grid, .showcase, .ui-grid, .flow { grid-template-columns: 1fr; }
+      .feature-grid, .showcase, .ui-grid, .preview-grid, .flow { grid-template-columns: 1fr; }
     }
     @media (max-width: 540px) {
       h1 { font-size: 40px; }
@@ -402,6 +437,7 @@
     <nav class="nav" aria-label="Primary">
       <a href="#features">Features</a>
       <a href="#workspace">Workspace</a>
+      <a href="#previews">Previews</a>
       <a href="#interface">Interface</a>
       <a href="#how">How it works</a>
       <a href="https://github.com/Iroha-P/image2-local-studio">GitHub</a>
@@ -481,6 +517,44 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section id="previews">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Image2 generated preview wall.</h2>
+          <p class="lead">这里放入了同步 skill 仓库里的 Image2 生成示例图，方便先看效果，再回到本地工具里改 prompt、换尺寸、保存到图片墙。</p>
+        </div>
+        <div class="preview-grid">
+          <figure class="preview-shot">
+            <img src="https://cms-assets.youmind.com/media/1776658772018_lukyfw_HGSUfldbIAEiMWZ.jpg" alt="VR headset exploded view poster generated preview">
+            <figcaption><strong>VR 头显爆炸视图</strong>硬件结构海报风格，适合产品拆解和说明图。</figcaption>
+          </figure>
+          <figure class="preview-shot">
+            <img src="https://cms-assets.youmind.com/media/1776662673014_nf0taw_HGRMNDybsAAGG88.jpg" alt="Hand drawn city food map generated preview">
+            <figcaption><strong>手绘城市美食地图</strong>适合地图、活动路线和生活方式内容。</figcaption>
+          </figure>
+          <figure class="preview-shot">
+            <img src="https://cms-assets.youmind.com/media/1776699445498_ga2ry5_HGO7H0DWkAApdKK.jpg" alt="E-commerce livestream UI mockup generated preview">
+            <figcaption><strong>电商直播 UI 样机</strong>把界面、商品和氛围放在同一张图里。</figcaption>
+          </figure>
+          <figure class="preview-shot">
+            <img src="https://cms-assets.youmind.com/media/1776756799880_c8u8w7_HGUKjjaasAAvVRa.jpg" alt="Anime martial arts duel generated preview">
+            <figcaption><strong>动漫动作场景</strong>用于测试角色、光影、动作和构图控制。</figcaption>
+          </figure>
+          <figure class="preview-shot">
+            <img src="https://cms-assets.youmind.com/media/1776661968404_8a5flm_HGQc_KOaMAA2vt0.jpg" alt="3D stone steps evolution infographic generated preview">
+            <figcaption><strong>3D 演化信息图</strong>适合流程、阶段、路线图和概念解释。</figcaption>
+          </figure>
+          <figure class="preview-shot">
+            <img src="https://cms-assets.youmind.com/media/1780479124367_9s9n9t_HJ3FX4xaUAAdhL2.jpg" alt="Futuristic holographic portrait generated preview">
+            <figcaption><strong>未来感全息肖像</strong>适合头像、封面和视觉风格测试。</figcaption>
+          </figure>
+        </div>
+        <p class="preview-note">
+          Preview images synced from <a href="https://github.com/YouMind-OpenLab/awesome-gpt-image-2">YouMind-OpenLab/awesome-gpt-image-2</a>, licensed under CC BY 4.0.
+        </p>
       </div>
     </section>
 
