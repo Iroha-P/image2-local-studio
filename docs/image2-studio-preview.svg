@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#101114"/>
+      <stop offset="1" stop-color="#050507"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#191b20"/>
+      <stop offset="1" stop-color="#0f1013"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="32" stdDeviation="32" flood-color="#000" flood-opacity=".48"/>
+    </filter>
+  </defs>
+  <rect width="1440" height="900" fill="url(#bg)"/>
+  <circle cx="1110" cy="130" r="230" fill="#2f6f73" opacity=".22"/>
+  <circle cx="270" cy="760" r="260" fill="#ff9500" opacity=".13"/>
+  <rect x="110" y="90" width="1220" height="720" rx="28" fill="#101114" stroke="rgba(255,255,255,.15)" filter="url(#shadow)"/>
+  <rect x="110" y="90" width="1220" height="64" rx="28" fill="#15171b"/>
+  <circle cx="152" cy="122" r="8" fill="#ff453a"/>
+  <circle cx="178" cy="122" r="8" fill="#ffcc00"/>
+  <circle cx="204" cy="122" r="8" fill="#3ddc84"/>
+  <text x="244" y="130" fill="#f7f7f8" font-family="Segoe UI, Arial" font-size="20" font-weight="700">Image2 Local Studio</text>
+  <rect x="150" y="190" width="330" height="580" rx="18" fill="url(#panel)" stroke="rgba(255,255,255,.13)"/>
+  <text x="178" y="235" fill="#ff9500" font-family="Segoe UI, Arial" font-size="14" font-weight="800">GPT IMAGE 2</text>
+  <text x="178" y="270" fill="#f7f7f8" font-family="Segoe UI, Arial" font-size="28" font-weight="800">参数控制面板</text>
+  <g fill="#15171b" stroke="rgba(255,255,255,.14)">
+    <rect x="178" y="312" width="274" height="46" rx="8"/>
+    <rect x="178" y="382" width="126" height="46" rx="8"/>
+    <rect x="326" y="382" width="126" height="46" rx="8"/>
+    <rect x="178" y="452" width="126" height="46" rx="8"/>
+    <rect x="326" y="452" width="126" height="46" rx="8"/>
+    <rect x="178" y="522" width="274" height="46" rx="8"/>
+  </g>
+  <g fill="#a6abb4" font-family="Segoe UI, Arial" font-size="15" font-weight="600">
+    <text x="196" y="341">gpt-image-2</text>
+    <text x="196" y="411">1024x1024</text>
+    <text x="344" y="411">4K 超分</text>
+    <text x="196" y="481">high</text>
+    <text x="344" y="481">png</text>
+    <text x="196" y="551">中文 Skill 库 · 333+</text>
+  </g>
+  <rect x="178" y="628" width="274" height="86" rx="12" fill="#2f6f73"/>
+  <text x="244" y="679" fill="#fff" font-family="Segoe UI, Arial" font-size="22" font-weight="900">生成图片</text>
+  <rect x="525" y="190" width="765" height="210" rx="18" fill="url(#panel)" stroke="rgba(255,255,255,.13)"/>
+  <text x="558" y="240" fill="#f7f7f8" font-family="Segoe UI, Arial" font-size="26" font-weight="800">Prompt Skill</text>
+  <text x="558" y="280" fill="#a6abb4" font-family="Segoe UI, Arial" font-size="17">选择、编辑、翻译并调用中文提示词场景。</text>
+  <rect x="558" y="318" width="680" height="42" rx="8" fill="#15171b" stroke="rgba(255,255,255,.13)"/>
+  <text x="578" y="345" fill="#a6abb4" font-family="Segoe UI, Arial" font-size="15">YouMind OpenLab 1: VR 头显爆炸视图海报</text>
+  <g transform="translate(525 432)">
+    <rect width="235" height="278" rx="18" fill="#15171b" stroke="rgba(255,255,255,.13)"/>
+    <rect x="18" y="18" width="199" height="154" rx="12" fill="#26343a"/>
+    <circle cx="117" cy="88" r="46" fill="#2f6f73"/>
+    <rect x="28" y="196" width="154" height="16" rx="8" fill="#f7f7f8" opacity=".85"/>
+    <rect x="28" y="228" width="116" height="12" rx="6" fill="#a6abb4"/>
+  </g>
+  <g transform="translate(790 432)">
+    <rect width="235" height="278" rx="18" fill="#15171b" stroke="rgba(255,255,255,.13)"/>
+    <rect x="18" y="18" width="199" height="154" rx="12" fill="#332820"/>
+    <rect x="78" y="46" width="82" height="100" rx="18" fill="#ff9500"/>
+    <rect x="28" y="196" width="168" height="16" rx="8" fill="#f7f7f8" opacity=".85"/>
+    <rect x="28" y="228" width="132" height="12" rx="6" fill="#a6abb4"/>
+  </g>
+  <g transform="translate(1055 432)">
+    <rect width="235" height="278" rx="18" fill="#15171b" stroke="rgba(255,255,255,.13)"/>
+    <rect x="18" y="18" width="199" height="154" rx="12" fill="#222533"/>
+    <path d="M117 38l24 52 56 8-40 40 10 56-50-26-50 26 10-56-40-40 56-8z" fill="#b875ff"/>
+    <rect x="28" y="196" width="138" height="16" rx="8" fill="#f7f7f8" opacity=".85"/>
+    <rect x="28" y="228" width="160" height="12" rx="6" fill="#a6abb4"/>
+  </g>
+</svg>

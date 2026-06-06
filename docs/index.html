@@ -1,290 +1,563 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Image2 Local Studio</title>
-    <style>
-      :root {
-        --bg: #f5f2ec;
-        --paper: #fffaf2;
-        --ink: #202124;
-        --muted: #665f56;
-        --line: #d8cfc2;
-        --accent: #2f6f73;
-        --accent-dark: #1d5154;
-        --warm: #b45f3c;
-        --shadow: 0 18px 45px rgba(45, 36, 27, 0.12);
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image2 Local Studio</title>
+  <meta name="description" content="Image2 Local Studio is a local GPT Image 2 workspace with Chinese prompt skills, 4K upscaling, and an image wall.">
+  <meta property="og:title" content="Image2 Local Studio">
+  <meta property="og:description" content="A local GPT Image 2 studio for prompts, official sizes, 4K upscaling, and saved image walls.">
+  <meta property="og:image" content="image2-studio-preview.svg">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050507;
+      --panel: #101114;
+      --panel-soft: #15171b;
+      --text: #f7f7f8;
+      --muted: #a6abb4;
+      --line: rgba(255, 255, 255, 0.14);
+      --orange: #ff9500;
+      --green: #3ddc84;
+      --blue: #5aa6ff;
+      --violet: #b875ff;
+      --teal: #2f6f73;
+      --shadow: rgba(0, 0, 0, 0.46);
+    }
 
-      * {
-        box-sizing: border-box;
-      }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
 
-      body {
-        margin: 0;
-        color: var(--ink);
+    .topbar {
+      position: fixed;
+      z-index: 50;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 30px;
+      background: rgba(5, 5, 7, 0.78);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--orange), var(--teal));
+      color: #050507;
+      font-weight: 950;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+    }
+    .nav a:hover { color: var(--text); }
+
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      padding: 110px 32px 64px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 80% 22%, rgba(47, 111, 115, 0.42), transparent 28rem),
+        radial-gradient(circle at 24% 84%, rgba(255, 149, 0, 0.2), transparent 24rem),
+        #050507;
+    }
+    .hero-visual {
+      position: absolute;
+      right: -110px;
+      top: 98px;
+      width: min(920px, 62vw);
+      opacity: 0.74;
+      filter: saturate(0.94) brightness(0.78);
+      transform: perspective(1200px) rotateY(-12deg) rotateX(3deg);
+      transform-origin: center;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(5, 5, 7, 0.98), rgba(5, 5, 7, 0.82) 43%, rgba(5, 5, 7, 0.22)),
+        linear-gradient(0deg, rgba(5, 5, 7, 0.98), rgba(5, 5, 7, 0.24) 46%, rgba(5, 5, 7, 0.62));
+      pointer-events: none;
+    }
+    .hero-inner,
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+    .eyebrow {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 22px rgba(255, 149, 0, 0.82);
+    }
+    h1 {
+      max-width: 860px;
+      margin: 18px 0 20px;
+      font-size: 76px;
+      line-height: 0.94;
+      letter-spacing: 0;
+    }
+    .hero-copy {
+      max-width: 690px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 19px;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.74);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.07);
+      font-weight: 850;
+    }
+    .button.primary {
+      color: #111;
+      background: var(--orange);
+      border-color: transparent;
+    }
+
+    section {
+      padding: 76px 32px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-heading {
+      max-width: 790px;
+      margin-bottom: 30px;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 40px;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .feature {
+      min-height: 188px;
+      padding: 20px;
+      border-radius: 8px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+    .feature i {
+      width: 12px;
+      height: 12px;
+      display: block;
+      margin-bottom: 18px;
+      border-radius: 50%;
+      background: var(--dot);
+      box-shadow: 0 0 22px var(--dot);
+    }
+    .feature strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .showcase {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .visual-shell {
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #000;
+      box-shadow: 0 24px 80px var(--shadow);
+    }
+    .visual-shell img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      background: #050507;
+    }
+    .state-list {
+      display: grid;
+      gap: 12px;
+    }
+    .state {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 16px;
+      align-items: center;
+      min-height: 88px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+    .state-dot {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .07);
+      color: var(--dot);
+      font-weight: 950;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .state strong { display: block; }
+    .state span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .ui-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .shot {
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+    .shot img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #050507;
+    }
+    .shot figcaption {
+      padding: 14px 16px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+    figure { margin: 0; }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--line);
+    }
+    .flow-step {
+      min-height: 168px;
+      padding: 22px;
+      background: var(--panel);
+    }
+    .flow-step span {
+      color: var(--orange);
+      font-family: "Cascadia Mono", ui-monospace, monospace;
+      font-weight: 900;
+    }
+    .flow-step strong {
+      display: block;
+      margin: 12px 0 8px;
+      font-size: 18px;
+    }
+    .flow-step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .download-band { background: #0b0c0f; }
+    .download-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .download-inner h2 {
+      max-width: 720px;
+      margin-bottom: 0;
+    }
+    footer {
+      padding: 30px 32px;
+      color: var(--muted);
+      background: #020203;
+    }
+    footer .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
+
+    @media (max-width: 920px) {
+      .topbar { padding: 0 18px; }
+      .nav { display: none; }
+      .hero { min-height: 88vh; padding: 94px 20px 54px; }
+      .hero-visual {
+        right: -180px;
+        width: 760px;
+        opacity: 0.32;
+      }
+      .hero::before {
         background:
-          radial-gradient(circle at top left, rgba(180, 95, 60, .16), transparent 28rem),
-          linear-gradient(135deg, #f5f2ec 0%, #e8f0ee 52%, #f7eadf 100%);
-        font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+          linear-gradient(90deg, rgba(5, 5, 7, 0.94), rgba(5, 5, 7, 0.84)),
+          linear-gradient(0deg, rgba(5, 5, 7, 0.99), rgba(5, 5, 7, 0.46) 52%, rgba(5, 5, 7, 0.84));
       }
-
-      a {
-        color: inherit;
+      h1 { font-size: 48px; }
+      h2 { font-size: 30px; }
+      section { padding: 58px 20px; }
+      .feature-grid, .showcase, .ui-grid, .flow { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      h1 { font-size: 40px; }
+      .hero-copy {
+        max-width: 320px;
+        font-size: 16px;
       }
+      .actions { flex-direction: column; }
+      .button { width: 100%; }
+      .download-inner { align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Image2 Local Studio home">
+      <span class="brand-mark">I2</span>
+      <span>Image2 Local Studio</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#workspace">Workspace</a>
+      <a href="#interface">Interface</a>
+      <a href="#how">How it works</a>
+      <a href="https://github.com/Iroha-P/image2-local-studio">GitHub</a>
+    </nav>
+  </header>
 
-      main {
-        width: min(1120px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 56px 0;
-      }
-
-      .hero {
-        display: grid;
-        gap: 20px;
-        padding: 26px 0 46px;
-        text-align: center;
-      }
-
-      .eyebrow {
-        margin: 0;
-        color: var(--warm);
-        font-size: 13px;
-        font-weight: 800;
-      }
-
-      h1 {
-        margin: 0;
-        font-size: clamp(40px, 9vw, 82px);
-        line-height: .95;
-        letter-spacing: 0;
-      }
-
-      .tagline {
-        margin: 0 auto;
-        max-width: 760px;
-        color: var(--muted);
-        font-size: 19px;
-        line-height: 1.7;
-      }
-
-      .badges,
-      .actions,
-      nav {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-      }
-
-      .badge,
-      .button {
-        display: inline-grid;
-        place-items: center;
-        min-height: 34px;
-        padding: 0 12px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255, 250, 242, .76);
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 800;
-      }
-
-      .button {
-        min-height: 44px;
-        padding: 0 18px;
-        font-size: 15px;
-      }
-
-      .primary {
-        color: #fff;
-        border-color: var(--accent);
-        background: var(--accent);
-      }
-
-      nav a {
-        color: var(--muted);
-        font-size: 14px;
-        text-decoration: none;
-      }
-
-      .notice {
-        margin: 0 0 22px;
-        padding: 16px 18px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255, 250, 242, .86);
-        color: var(--muted);
-        line-height: 1.6;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 14px;
-      }
-
-      .card {
-        min-height: 158px;
-        padding: 20px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255, 250, 242, .9);
-        box-shadow: var(--shadow);
-      }
-
-      h2 {
-        margin: 0 0 16px;
-        font-size: 22px;
-      }
-
-      h3 {
-        margin: 0 0 10px;
-        font-size: 17px;
-      }
-
-      p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.65;
-      }
-
-      section {
-        margin-top: 30px;
-      }
-
-      .steps {
-        display: grid;
-        gap: 10px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .steps li {
-        padding: 13px 15px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, .56);
-        color: var(--muted);
-      }
-
-      code {
-        padding: 2px 6px;
-        border-radius: 5px;
-        color: var(--accent-dark);
-        background: #fff;
-      }
-
-      footer {
-        margin-top: 44px;
-        color: var(--muted);
-        text-align: center;
-      }
-
-      @media (max-width: 620px) {
-        main {
-          padding: 34px 0;
-        }
-
-        .hero {
-          text-align: left;
-        }
-
-        .badges,
-        .actions,
-        nav {
-          justify-content: flex-start;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <section class="hero">
-        <p class="eyebrow">GPT Image 2 Local Tool</p>
-        <h1>Image2 Local Studio</h1>
-        <p class="tagline">一个可一键启动的本地生图工作台：支持官方原生尺寸、4K / 自定义超分、图片墙、API 配置保存，以及可同步和翻译的中文 Prompt Skill 库。</p>
-
-        <div class="badges">
-          <span class="badge">status · MVP</span>
-          <span class="badge">Windows</span>
-          <span class="badge">Node.js 18+</span>
-          <span class="badge">gpt-image-2</span>
-          <span class="badge">333+ Skills</span>
-        </div>
-
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-visual" src="image2-studio-preview.svg" alt="Image2 Local Studio interface preview">
+      <div class="hero-inner">
+        <div class="eyebrow">Local GPT Image 2 workspace</div>
+        <h1 id="hero-title">Image2 Local Studio</h1>
+        <p class="hero-copy">
+          一个本地 GPT Image 2 生图工作台，把 API 配置、官方尺寸、4K 超分、中文 Prompt Skill 和图片墙放进同一个可一键启动的界面。
+        </p>
         <div class="actions">
-          <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">GitHub 仓库</a>
-          <a class="button" href="https://github.com/Iroha-P/image2-local-studio#quick-start--快速开始">快速开始</a>
+          <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">View source</a>
+          <a class="button" href="https://github.com/Iroha-P/image2-local-studio#quick-start--快速开始">Quick start</a>
+          <a class="button" href="#workspace">Explore UI</a>
         </div>
+      </div>
+    </section>
 
-        <nav>
-          <a href="#features">功能亮点</a>
-          <a href="#workflow">工作流</a>
-          <a href="#skills">中文 Skill</a>
-          <a href="#pages">项目主页</a>
-        </nav>
-      </section>
-
-      <p class="notice">本项目是本地工具，不是云端托管生图服务。GitHub Pages 只展示项目主页；真正的生图 API 需要在本机或支持 Node.js 的服务器上运行。</p>
-
-      <section id="features">
-        <h2>Features / 功能亮点</h2>
-        <div class="grid">
-          <article class="card">
-            <h3>本地 API 代理</h3>
-            <p>API Key 保存在本机，浏览器只访问 <code>localhost:8787</code>。</p>
-          </article>
-          <article class="card">
-            <h3>尺寸与超分</h3>
-            <p>按 OpenAI 官方尺寸生成，再用 <code>sharp</code> 保存为 2K、4K 或自定义尺寸。</p>
-          </article>
-          <article class="card">
-            <h3>中文 Skill 库</h3>
-            <p>同步 YouMind 中文 README，并接入 EvoLinkAI 场景；英文 Skill 可一键翻译。</p>
-          </article>
-          <article class="card">
-            <h3>图片墙</h3>
-            <p>生成结果自动保存到本地，支持预览、下载和删除。</p>
-          </article>
+    <section id="features">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>A local studio for repeatable image generation.</h2>
+          <p class="lead">Image2 Local Studio keeps keys, prompts, generated files, and upscaling decisions on your machine while still using the official OpenAI image endpoint.</p>
         </div>
-      </section>
-
-      <section id="workflow">
-        <h2>Workflow / 工作流</h2>
-        <ol class="steps">
-          <li>双击 <code>start.bat</code> 启动本地服务。</li>
-          <li>保存 OpenAI API Key，选择官方尺寸和最终导出尺寸。</li>
-          <li>选择或编辑 Prompt Skill，必要时翻译为中文。</li>
-          <li>生成图片，结果进入本地图片墙。</li>
-        </ol>
-      </section>
-
-      <section id="skills">
-        <h2>Prompt Skills / 中文 Skill</h2>
-        <div class="grid">
-          <article class="card">
-            <h3>YouMind OpenLab</h3>
-            <p>优先读取 <code>README_zh.md</code>，保留 CC BY 4.0 来源说明。</p>
+        <div class="feature-grid">
+          <article class="feature" style="--dot: var(--orange)">
+            <i></i>
+            <strong>API Control Panel</strong>
+            <p>Save the OpenAI key locally, switch model settings, and tune quality, background, format, and moderation.</p>
           </article>
-          <article class="card">
-            <h3>EvoLinkAI</h3>
-            <p>读取 <code>README_zh-CN.md</code>，保留 CC0 1.0 来源说明。</p>
+          <article class="feature" style="--dot: var(--green)">
+            <i></i>
+            <strong>Native + Upscaled Sizes</strong>
+            <p>Generate with official sizes first, then export 2K, 4K, or custom resolutions through local sharp processing.</p>
+          </article>
+          <article class="feature" style="--dot: var(--blue)">
+            <i></i>
+            <strong>Chinese Prompt Skills</strong>
+            <p>Sync YouMind and EvoLinkAI prompt cases, edit them locally, and translate English skills into Chinese.</p>
+          </article>
+          <article class="feature" style="--dot: var(--violet)">
+            <i></i>
+            <strong>Saved Image Wall</strong>
+            <p>Every result lands in a local gallery with preview, download, delete, native size, and final export metadata.</p>
           </article>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="pages">
-        <h2>Project Homepage / 项目主页</h2>
-        <p>这个页面由 <code>docs/index.html</code> 发布到 GitHub Pages。代码、启动脚本和完整说明请查看 GitHub 仓库。</p>
-      </section>
+    <section id="workspace">
+      <div class="wrap showcase">
+        <div class="visual-shell">
+          <img src="image2-studio-preview.svg" alt="Image2 Local Studio workspace">
+        </div>
+        <div>
+          <div class="section-heading">
+            <h2>The whole workflow on one screen.</h2>
+            <p class="lead">The left side controls API and output settings. The right side stays focused on prompt writing and the image wall.</p>
+          </div>
+          <div class="state-list">
+            <div class="state" style="--dot: var(--orange)">
+              <div class="state-dot">1K</div>
+              <span><strong>Official native size</strong>Use auto, square, landscape, or portrait sizes supported by the API.</span>
+            </div>
+            <div class="state" style="--dot: var(--green)">
+              <div class="state-dot">4K</div>
+              <span><strong>Local final export</strong>Save larger files after generation without sending unsupported sizes to OpenAI.</span>
+            </div>
+            <div class="state" style="--dot: var(--blue)">
+              <div class="state-dot">中</div>
+              <span><strong>Editable Chinese skills</strong>Name, delete, translate, reset, sync, and call prompt skills from the UI.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <footer>
-        Image2 Local Studio · built for local GPT Image 2 workflows
-      </footer>
-    </main>
-  </body>
+    <section id="interface">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>Interface areas built for daily image work.</h2>
+          <p class="lead">Like Code Island, this page treats the product as a set of clear states: setup, skill selection, generation, and saved results.</p>
+        </div>
+        <div class="ui-grid">
+          <figure class="shot">
+            <img src="https://raw.githubusercontent.com/Iroha-P/image2-local-studio/main/public/skill-previews/product.svg" alt="Product poster prompt skill preview">
+            <figcaption>Skill preview: built-in prompt scenes include preview art and editable prompt text.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="https://raw.githubusercontent.com/Iroha-P/image2-local-studio/main/public/skill-previews/space.svg" alt="Scene prompt skill preview">
+            <figcaption>Skill library: sync 333+ prompt cases from YouMind and EvoLinkAI into a local JSON store.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="https://raw.githubusercontent.com/Iroha-P/image2-local-studio/main/public/skill-previews/social.svg" alt="Social media prompt skill preview">
+            <figcaption>Generation panel: official native size plus final output size keeps API calls predictable.</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="https://raw.githubusercontent.com/Iroha-P/image2-local-studio/main/public/skill-previews/icon.svg" alt="Icon asset prompt skill preview">
+            <figcaption>Image wall: saved results can be previewed, downloaded, or deleted from the local gallery.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap">
+        <div class="section-heading">
+          <h2>From prompt skill to local image file.</h2>
+          <p class="lead">The app keeps the thin browser UI and the API credentials separated by a local Node service.</p>
+        </div>
+        <div class="flow">
+          <div class="flow-step">
+            <span>01</span>
+            <strong>Choose a skill</strong>
+            <p>Select a scene, edit placeholders, or translate the current prompt into Chinese.</p>
+          </div>
+          <div class="flow-step">
+            <span>02</span>
+            <strong>Generate natively</strong>
+            <p>The local service calls OpenAI with supported image sizes and saved API settings.</p>
+          </div>
+          <div class="flow-step">
+            <span>03</span>
+            <strong>Upscale locally</strong>
+            <p>Sharp resizes and encodes the image into the final 2K, 4K, or custom output.</p>
+          </div>
+          <div class="flow-step">
+            <span>04</span>
+            <strong>Save to wall</strong>
+            <p>The image and metadata are written to the local gallery for preview and download.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="download-band">
+      <div class="wrap download-inner">
+        <h2>Run GPT Image 2 like a local creative workstation.</h2>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">Open repository</a>
+          <a class="button" href="https://github.com/Iroha-P/image2-local-studio#quick-start--快速开始">Read setup</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Local Node.js app. GitHub Pages hosts this static product page.</span>
+      <a href="https://github.com/Iroha-P/image2-local-studio">github.com/Iroha-P/image2-local-studio</a>
+    </div>
+  </footer>
+</body>
 </html>
