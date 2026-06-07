@@ -4,269 +4,320 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Image2 Local Studio</title>
-  <meta name="description" content="Image2 Local Studio is a local GPT Image 2 workspace with Chinese prompt skills, 4K upscaling, and an image wall.">
+  <meta name="description" content="Image2 Local Studio 是本地 GPT Image 2 生图工作台，包含 API 控制、官方尺寸、4K 超分、中文 Prompt Skill 和图片墙。">
   <meta property="og:title" content="Image2 Local Studio">
-  <meta property="og:description" content="A local GPT Image 2 studio for prompts, official sizes, 4K upscaling, and saved image walls.">
-  <meta property="og:image" content="image2-studio-preview.svg">
+  <meta property="og:description" content="Local GPT Image 2 studio with prompt skills, native sizes, 4K upscaling, and a saved image wall.">
+  <meta property="og:image" content="previews/vr.jpg">
   <style>
     :root {
-      color-scheme: dark;
-      --bg: #050507;
-      --panel: #101114;
-      --panel-soft: #15171b;
-      --text: #f7f7f8;
-      --muted: #a6abb4;
-      --line: rgba(255, 255, 255, 0.14);
-      --orange: #ff9500;
-      --green: #3ddc84;
-      --blue: #5aa6ff;
-      --violet: #b875ff;
-      --teal: #2f6f73;
-      --shadow: rgba(0, 0, 0, 0.46);
+      color-scheme: light;
+      --ink: #151515;
+      --muted: #67625b;
+      --paper: #f7f2e8;
+      --panel: rgba(255, 252, 244, 0.86);
+      --line: rgba(41, 37, 31, 0.14);
+      --amber: #f08a24;
+      --teal: #247a78;
+      --mint: #a7d7bf;
+      --blue: #456bd9;
+      --graphite: #242424;
+      --shadow: 0 26px 74px rgba(58, 47, 31, 0.16);
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.55;
+      line-height: 1.58;
+      background:
+        linear-gradient(90deg, rgba(36, 122, 120, .07) 1px, transparent 1px) 0 0 / 44px 44px,
+        linear-gradient(rgba(36, 122, 120, .06) 1px, transparent 1px) 0 0 / 44px 44px,
+        radial-gradient(circle at 18% 18%, rgba(240, 138, 36, .22), transparent 28rem),
+        radial-gradient(circle at 82% 12%, rgba(36, 122, 120, .18), transparent 24rem),
+        var(--paper);
     }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
+    .wrap { width: min(1200px, calc(100% - 40px)); margin: 0 auto; }
+    .hero-grid > *, .studio-board, .control-rail, .canvas, .field, .prompt-box, .workflow-card, .preview-shot {
+      min-width: 0;
+    }
 
     .topbar {
-      position: fixed;
-      z-index: 50;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(247, 242, 232, .84);
+      backdrop-filter: blur(18px);
+    }
+    .topbar-inner {
+      min-height: 66px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
-      padding: 0 30px;
-      background: rgba(5, 5, 7, 0.78);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(18px);
+      gap: 20px;
     }
     .brand {
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      font-weight: 850;
-      white-space: nowrap;
+      font-weight: 950;
     }
     .brand-mark {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
       border-radius: 8px;
-      background: linear-gradient(135deg, var(--orange), var(--teal));
-      color: #050507;
-      font-weight: 950;
+      color: #fff;
+      background: linear-gradient(135deg, var(--graphite), var(--teal));
+      box-shadow: 0 14px 32px rgba(36, 122, 120, .22);
     }
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 750;
-    }
-    .nav a:hover { color: var(--text); }
+    .nav { display: flex; gap: 16px; color: var(--muted); font-size: 14px; font-weight: 850; }
+    .nav a:hover { color: var(--teal); }
 
     .hero {
-      position: relative;
-      min-height: 92vh;
-      display: flex;
-      align-items: flex-end;
-      overflow: hidden;
-      padding: 110px 32px 64px;
+      padding: 76px 0 58px;
       border-bottom: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 80% 22%, rgba(47, 111, 115, 0.42), transparent 28rem),
-        radial-gradient(circle at 24% 84%, rgba(255, 149, 0, 0.2), transparent 24rem),
-        #050507;
     }
-    .hero-visual {
-      position: absolute;
-      right: -110px;
-      top: 98px;
-      width: min(920px, 62vw);
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.54);
-      opacity: 0.86;
-      filter: saturate(0.94) brightness(0.78);
-      transform: perspective(1200px) rotateY(-12deg) rotateX(3deg);
-      transform-origin: center;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(5, 5, 7, 0.98), rgba(5, 5, 7, 0.82) 43%, rgba(5, 5, 7, 0.22)),
-        linear-gradient(0deg, rgba(5, 5, 7, 0.98), rgba(5, 5, 7, 0.24) 46%, rgba(5, 5, 7, 0.62));
-      pointer-events: none;
-    }
-    .hero-inner,
-    .wrap {
-      position: relative;
-      z-index: 1;
-      width: min(1180px, 100%);
-      margin: 0 auto;
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .86fr) minmax(520px, 1.14fr);
+      gap: 34px;
+      align-items: center;
     }
     .eyebrow {
       width: fit-content;
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      color: var(--orange);
-      font-size: 13px;
-      font-weight: 900;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid rgba(240, 138, 36, .42);
+      border-radius: 999px;
+      color: #9a5015;
+      background: rgba(255, 255, 255, .62);
+      font-size: 12px;
+      font-weight: 950;
       text-transform: uppercase;
-      letter-spacing: 0;
+      letter-spacing: .08em;
     }
     .eyebrow::before {
       content: "";
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      background: var(--orange);
-      box-shadow: 0 0 22px rgba(255, 149, 0, 0.82);
+      background: var(--amber);
+      box-shadow: 0 0 0 7px rgba(240, 138, 36, .14);
     }
     h1 {
-      max-width: 860px;
-      margin: 18px 0 20px;
-      font-size: 76px;
-      line-height: 0.94;
+      max-width: 760px;
+      margin: 18px 0 18px;
+      font-size: clamp(56px, 7vw, 94px);
+      line-height: .9;
       letter-spacing: 0;
     }
     .hero-copy {
-      max-width: 690px;
+      max-width: 650px;
       margin: 0;
-      color: var(--muted);
-      font-size: 19px;
-      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.74);
+      color: #514b42;
+      font-size: 20px;
     }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 30px;
-    }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
     .button {
       min-height: 46px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
       padding: 0 18px;
-      border-radius: 8px;
       border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.07);
-      font-weight: 850;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .72);
+      font-weight: 950;
+      box-shadow: 0 14px 34px rgba(58, 47, 31, .1);
     }
     .button.primary {
-      color: #111;
-      background: var(--orange);
-      border-color: transparent;
+      color: #fff;
+      border-color: var(--teal);
+      background: var(--teal);
     }
 
-    section {
-      padding: 76px 32px;
-      border-bottom: 1px solid var(--line);
-    }
-    .section-heading {
-      max-width: 790px;
-      margin-bottom: 30px;
-    }
-    h2 {
-      margin: 0 0 12px;
-      font-size: 40px;
-      line-height: 1.08;
-      letter-spacing: 0;
-    }
-    .lead {
-      margin: 0;
-      color: var(--muted);
-      font-size: 17px;
-    }
-
-    .feature-grid {
+    .studio-board {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 620px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(36, 36, 36, .94);
+      box-shadow: var(--shadow);
+    }
+    .control-rail {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 8px;
+      color: #f8f3e8;
+      background: #171717;
+    }
+    .rail-label { color: var(--amber); font-size: 12px; font-weight: 950; }
+    .field, .rail-button {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 8px;
+      color: #c9c2b6;
+      background: rgba(255, 255, 255, .04);
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .rail-button {
+      justify-content: center;
+      color: #171717;
+      background: var(--amber);
+      border-color: transparent;
+      font-weight: 950;
+    }
+    .canvas {
+      overflow: hidden;
+      border-radius: 8px;
+      background: #f6efe4;
+    }
+    .canvas-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(41, 37, 31, .1);
+    }
+    .canvas-head strong { font-size: 18px; }
+    .status-pill { color: var(--teal); font-size: 12px; font-weight: 950; }
+    .mosaic {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 12px;
+    }
+    .mosaic figure {
+      margin: 0;
+      overflow: hidden;
+      min-height: 190px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid rgba(41, 37, 31, .12);
+    }
+    .mosaic figure:first-child { grid-row: span 2; }
+    .mosaic img { width: 100%; height: 100%; min-height: 190px; object-fit: cover; }
+    .prompt-strip {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 10px;
+      padding: 0 12px 12px;
+    }
+    .prompt-box {
+      min-height: 94px;
+      padding: 14px;
+      border: 1px solid rgba(41, 37, 31, .12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .74);
+    }
+    .prompt-box span { color: var(--muted); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .prompt-box strong { display: block; margin-top: 8px; font-size: 18px; }
+
+    section { padding: 76px 0; border-bottom: 1px solid var(--line); }
+    .section-heading { max-width: 760px; margin-bottom: 30px; }
+    h2 { margin: 0 0 12px; font-size: clamp(34px, 4.8vw, 58px); line-height: 1; }
+    .lead { margin: 0; color: var(--muted); font-size: 18px; }
+
+    .feature-grid, .preview-grid, .flow {
+      display: grid;
       gap: 14px;
     }
-    .feature {
-      min-height: 188px;
-      padding: 20px;
+    .feature-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .feature, .preview-shot, .flow-step {
+      border: 1px solid var(--line);
       border-radius: 8px;
       background: var(--panel);
-      border: 1px solid var(--line);
-      box-shadow: 0 18px 48px var(--shadow);
+      box-shadow: 0 18px 48px rgba(58, 47, 31, .1);
     }
+    .feature { min-height: 178px; padding: 20px; }
     .feature i {
-      width: 12px;
-      height: 12px;
+      width: 36px;
+      height: 6px;
       display: block;
-      margin-bottom: 18px;
-      border-radius: 50%;
+      margin-bottom: 20px;
+      border-radius: 999px;
       background: var(--dot);
-      box-shadow: 0 0 22px var(--dot);
     }
-    .feature strong {
+    .feature strong { display: block; margin-bottom: 9px; font-size: 18px; }
+    .feature p, .flow-step p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .75fr);
+      gap: 22px;
+      align-items: center;
+    }
+    .workflow-panel {
+      display: grid;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .58);
+      box-shadow: var(--shadow);
+    }
+    .workflow-card {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      min-height: 132px;
+      padding: 10px;
+      border: 1px solid rgba(41, 37, 31, .12);
+      border-radius: 8px;
+      background: rgba(255, 252, 244, .86);
+    }
+    .workflow-card img {
+      width: 132px;
+      height: 108px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(41, 37, 31, .1);
+    }
+    .workflow-card b {
+      color: var(--teal);
+      font-family: "Cascadia Mono", ui-monospace, monospace;
+      font-size: 13px;
+    }
+    .workflow-card strong {
       display: block;
-      margin-bottom: 10px;
+      margin: 4px 0 4px;
       font-size: 18px;
     }
-    .feature p {
-      margin: 0;
+    .workflow-card span {
       color: var(--muted);
       font-size: 14px;
     }
-
-    .showcase {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 24px;
-      align-items: center;
-    }
-    .visual-shell {
-      overflow: hidden;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: #000;
-      box-shadow: 0 24px 80px var(--shadow);
-    }
-    .visual-shell img {
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      background: #050507;
-    }
-    .state-list {
-      display: grid;
-      gap: 12px;
-    }
+    .state-list { display: grid; gap: 12px; }
     .state {
       display: grid;
-      grid-template-columns: 58px 1fr;
-      gap: 16px;
+      grid-template-columns: 56px 1fr;
+      gap: 14px;
       align-items: center;
-      min-height: 88px;
-      padding: 12px 14px;
-      border-radius: 8px;
+      min-height: 86px;
+      padding: 12px;
       border: 1px solid var(--line);
-      background: var(--panel-soft);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .6);
     }
     .state-dot {
       width: 54px;
@@ -274,109 +325,32 @@
       display: grid;
       place-items: center;
       border-radius: 8px;
-      background: rgba(255, 255, 255, .07);
-      color: var(--dot);
+      color: #fff;
+      background: var(--dot);
       font-weight: 950;
-      box-shadow: inset 0 0 0 1px var(--line);
     }
     .state strong { display: block; }
-    .state span {
-      display: block;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .state span { color: var(--muted); font-size: 14px; }
 
-    .ui-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-    .shot {
-      overflow: hidden;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-    }
-    .shot img {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      background: #050507;
-    }
-    .shot figcaption {
-      padding: 14px 16px;
-      color: var(--muted);
-      border-top: 1px solid var(--line);
-      font-size: 14px;
-    }
-    .preview-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-    .preview-shot {
-      overflow: hidden;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      box-shadow: 0 18px 48px var(--shadow);
-    }
-    .preview-shot img {
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
-      background: #050507;
-    }
+    .preview-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .preview-shot { overflow: hidden; }
+    .preview-shot img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
     .preview-shot figcaption {
-      min-height: 74px;
-      padding: 13px 15px;
-      color: var(--muted);
+      padding: 14px 15px;
       border-top: 1px solid var(--line);
-      font-size: 14px;
-    }
-    .preview-shot strong {
-      display: block;
-      color: var(--text);
-      font-size: 15px;
-    }
-    .preview-note {
-      margin: 18px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    figure { margin: 0; }
-
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--line);
-    }
-    .flow-step {
-      min-height: 168px;
-      padding: 22px;
-      background: var(--panel);
-    }
-    .flow-step span {
-      color: var(--orange);
-      font-family: "Cascadia Mono", ui-monospace, monospace;
-      font-weight: 900;
-    }
-    .flow-step strong {
-      display: block;
-      margin: 12px 0 8px;
-      font-size: 18px;
-    }
-    .flow-step p {
-      margin: 0;
       color: var(--muted);
       font-size: 14px;
     }
+    .preview-shot strong { display: block; color: var(--ink); font-size: 15px; }
+    .preview-note { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
 
-    .download-band { background: #0b0c0f; }
+    .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .flow-step { min-height: 168px; padding: 22px; }
+    .flow-step span { color: var(--teal); font-family: "Cascadia Mono", ui-monospace, monospace; font-weight: 950; }
+    .flow-step strong { display: block; margin: 12px 0 8px; font-size: 18px; }
+
+    .download-band { background: rgba(36, 36, 36, .96); color: #fff; }
+    .download-band .lead { color: #c9c2b6; }
     .download-inner {
       display: flex;
       align-items: center;
@@ -384,84 +358,90 @@
       gap: 24px;
       flex-wrap: wrap;
     }
-    .download-inner h2 {
-      max-width: 720px;
-      margin-bottom: 0;
-    }
-    footer {
-      padding: 30px 32px;
-      color: var(--muted);
-      background: #020203;
-    }
-    footer .wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      flex-wrap: wrap;
-      font-size: 14px;
-    }
+    footer { padding: 30px 0; color: var(--muted); }
+    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 14px; }
 
-    @media (max-width: 920px) {
-      .topbar { padding: 0 18px; }
+    @media (max-width: 940px) {
       .nav { display: none; }
-      .hero { min-height: 88vh; padding: 94px 20px 54px; }
-      .hero-visual {
-        right: -180px;
-        width: 760px;
-        opacity: 0.32;
-      }
-      .hero::before {
-        background:
-          linear-gradient(90deg, rgba(5, 5, 7, 0.94), rgba(5, 5, 7, 0.84)),
-          linear-gradient(0deg, rgba(5, 5, 7, 0.99), rgba(5, 5, 7, 0.46) 52%, rgba(5, 5, 7, 0.84));
-      }
-      h1 { font-size: 48px; }
-      h2 { font-size: 30px; }
-      section { padding: 58px 20px; }
-      .feature-grid, .showcase, .ui-grid, .preview-grid, .flow { grid-template-columns: 1fr; }
+      .hero-grid, .studio-board, .workspace-grid, .prompt-strip { grid-template-columns: 1fr; }
+      .control-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .feature-grid, .preview-grid, .flow { grid-template-columns: 1fr; }
+      .mosaic { grid-template-columns: 1fr; }
+      .mosaic figure:first-child { grid-row: span 1; }
     }
-    @media (max-width: 540px) {
-      h1 { font-size: 40px; }
-      .hero-copy {
-        max-width: 320px;
-        font-size: 16px;
+    @media (max-width: 560px) {
+      .wrap { width: auto; margin-left: 14px; margin-right: 14px; }
+      .topbar-inner { min-height: 60px; }
+      h1 { font-size: 48px; }
+      .hero { padding-top: 48px; }
+      .control-rail { grid-template-columns: 1fr; }
+      .actions .button { width: 100%; }
+      .canvas-head {
+        display: block;
       }
-      .actions { flex-direction: column; }
-      .button { width: 100%; }
-      .download-inner { align-items: stretch; }
+      .status-pill {
+        display: block;
+        margin-top: 6px;
+      }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#top" aria-label="Image2 Local Studio home">
-      <span class="brand-mark">I2</span>
-      <span>Image2 Local Studio</span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="#features">Features</a>
-      <a href="#workspace">Workspace</a>
-      <a href="#previews">Previews</a>
-      <a href="#interface">Interface</a>
-      <a href="#how">How it works</a>
-      <a href="https://github.com/Iroha-P/image2-local-studio">GitHub</a>
-    </nav>
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#top" aria-label="Image2 Local Studio home">
+        <span class="brand-mark">I2</span>
+        <span>Image2 Local Studio</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#workspace">Workspace</a>
+        <a href="#previews">Previews</a>
+        <a href="#how">Flow</a>
+        <a href="https://github.com/Iroha-P/image2-local-studio">GitHub</a>
+      </nav>
+    </div>
   </header>
 
   <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <img class="hero-visual" src="image2-studio-preview.svg" alt="Image2 Local Studio interface preview">
-      <div class="hero-inner">
-        <div class="eyebrow">Local GPT Image 2 workspace</div>
-        <h1 id="hero-title">Image2 Local Studio</h1>
-        <p class="hero-copy">
-          一个本地 GPT Image 2 生图工作台，把 API 配置、官方尺寸、4K 超分、中文 Prompt Skill 和图片墙放进同一个可一键启动的界面。
-        </p>
-        <div class="actions">
-          <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">View source</a>
-          <a class="button" href="https://github.com/Iroha-P/image2-local-studio#quick-start--快速开始">Quick start</a>
-          <a class="button" href="#workspace">Explore UI</a>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Local GPT Image 2 workspace</div>
+          <h1>Image2 Local Studio</h1>
+          <p class="hero-copy">一个本地生图控制台：管理 OpenAI API、调用中文 Prompt Skill、生成官方尺寸图片，再把 2K/4K 超分结果保存进本地图片墙。</p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">Open repository</a>
+            <a class="button" href="#previews">View previews</a>
+            <a class="button" href="#workspace">Explore workspace</a>
+          </div>
+        </div>
+        <div class="studio-board" aria-label="Image2 Local Studio control console">
+          <aside class="control-rail">
+            <div class="rail-label">GPT IMAGE 2</div>
+            <div class="field">model: gpt-image-2</div>
+            <div class="field">native: 1024 x 1024</div>
+            <div class="field">final: 4K upscale</div>
+            <div class="field">quality: high</div>
+            <div class="field">format: png</div>
+            <div class="field">skill presets: 333+</div>
+            <div class="rail-button">Generate</div>
+          </aside>
+          <div class="canvas">
+            <div class="canvas-head">
+              <strong>Prompt Skill Gallery</strong>
+              <span class="status-pill">Saved image wall ready</span>
+            </div>
+            <div class="mosaic">
+              <figure><img src="previews/slides.jpg" alt="Illustrated presentation generated preview"></figure>
+              <figure><img src="previews/action.jpg" alt="Action scene generated preview"></figure>
+              <figure><img src="previews/portrait.jpg" alt="Holographic portrait generated preview"></figure>
+            </div>
+            <div class="prompt-strip">
+              <div class="prompt-box"><span>Current skill</span><strong>产品爆炸视图 / 手绘地图 / 信息图</strong></div>
+              <div class="prompt-box"><span>Output</span><strong>Native API size + local final export</strong></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -469,56 +449,67 @@
     <section id="features">
       <div class="wrap">
         <div class="section-heading">
-          <h2>A local studio for repeatable image generation.</h2>
-          <p class="lead">Image2 Local Studio keeps keys, prompts, generated files, and upscaling decisions on your machine while still using the official OpenAI image endpoint.</p>
+          <h2>为重复生图工作流做的本地控制台。</h2>
+          <p class="lead">不是单张 prompt 表单，而是把参数、技能、预览、超分和文件管理放在一起。</p>
         </div>
         <div class="feature-grid">
-          <article class="feature" style="--dot: var(--orange)">
+          <article class="feature" style="--dot: var(--amber)">
             <i></i>
-            <strong>API Control Panel</strong>
-            <p>Save the OpenAI key locally, switch model settings, and tune quality, background, format, and moderation.</p>
+            <strong>API Control</strong>
+            <p>OpenAI key 只保存在本地，支持模型、质量、背景、格式和安全参数配置。</p>
           </article>
-          <article class="feature" style="--dot: var(--green)">
+          <article class="feature" style="--dot: var(--teal)">
             <i></i>
-            <strong>Native + Upscaled Sizes</strong>
-            <p>Generate with official sizes first, then export 2K, 4K, or custom resolutions through local sharp processing.</p>
+            <strong>Native + 4K</strong>
+            <p>先按官方支持尺寸生成，再用本地 sharp 导出 2K、4K 或自定义尺寸。</p>
           </article>
           <article class="feature" style="--dot: var(--blue)">
             <i></i>
-            <strong>Chinese Prompt Skills</strong>
-            <p>Sync YouMind and EvoLinkAI prompt cases, edit them locally, and translate English skills into Chinese.</p>
+            <strong>Prompt Skills</strong>
+            <p>同步 YouMind 和 EvoLinkAI 的案例，支持中文化、命名、删除、重置和编辑。</p>
           </article>
-          <article class="feature" style="--dot: var(--violet)">
+          <article class="feature" style="--dot: var(--graphite)">
             <i></i>
-            <strong>Saved Image Wall</strong>
-            <p>Every result lands in a local gallery with preview, download, delete, native size, and final export metadata.</p>
+            <strong>Image Wall</strong>
+            <p>生成结果落到本地图片墙，保留预览、下载、删除、原始尺寸和导出尺寸。</p>
           </article>
         </div>
       </div>
     </section>
 
     <section id="workspace">
-      <div class="wrap showcase">
-        <div class="visual-shell">
-          <img src="image2-studio-preview.svg" alt="Image2 Local Studio workspace">
+      <div class="wrap workspace-grid">
+        <div class="workflow-panel" aria-label="Image2 workflow examples">
+          <article class="workflow-card">
+            <img src="previews/vr.jpg" alt="Generated product poster thumbnail">
+            <div><b>01 / API SIZE</b><strong>官方尺寸先生成</strong><span>让请求保持在模型支持范围内，再进入本地后处理。</span></div>
+          </article>
+          <article class="workflow-card">
+            <img src="previews/map.jpg" alt="Generated map thumbnail">
+            <div><b>02 / SKILL EDIT</b><strong>Prompt Skill 可改可重置</strong><span>同步仓库案例以后，在本地按自己的项目改字段。</span></div>
+          </article>
+          <article class="workflow-card">
+            <img src="previews/info.jpg" alt="Generated infographic thumbnail">
+            <div><b>03 / FINAL WALL</b><strong>超分后进入图片墙</strong><span>本地保存最终文件和元数据，方便再次下载或清理。</span></div>
+          </article>
         </div>
         <div>
           <div class="section-heading">
-            <h2>The whole workflow on one screen.</h2>
-            <p class="lead">The left side controls API and output settings. The right side stays focused on prompt writing and the image wall.</p>
+            <h2>参数和图库不再分散。</h2>
+            <p class="lead">左侧像控制台，右侧像工作板。生成前能看 skill 预览，生成后能直接整理图片。</p>
           </div>
           <div class="state-list">
-            <div class="state" style="--dot: var(--orange)">
+            <div class="state" style="--dot: var(--amber)">
               <div class="state-dot">1K</div>
-              <span><strong>Official native size</strong>Use auto, square, landscape, or portrait sizes supported by the API.</span>
+              <span><strong>官方原生尺寸</strong>保持 API 调用稳定，不把不支持的尺寸硬塞给模型。</span>
             </div>
-            <div class="state" style="--dot: var(--green)">
+            <div class="state" style="--dot: var(--teal)">
               <div class="state-dot">4K</div>
-              <span><strong>Local final export</strong>Save larger files after generation without sending unsupported sizes to OpenAI.</span>
+              <span><strong>本地最终导出</strong>超分和编码在本机完成，适合做封面、海报和素材归档。</span>
             </div>
-            <div class="state" style="--dot: var(--blue)">
+            <div class="state" style="--dot: var(--graphite)">
               <div class="state-dot">中</div>
-              <span><strong>Editable Chinese skills</strong>Name, delete, translate, reset, sync, and call prompt skills from the UI.</span>
+              <span><strong>中文 Skill 库</strong>英文案例可以翻译成中文，也可以手动调整为自己的调用模板。</span>
             </div>
           </div>
         </div>
@@ -528,102 +519,60 @@
     <section id="previews">
       <div class="wrap">
         <div class="section-heading">
-          <h2>Image2 generated preview wall.</h2>
-          <p class="lead">这里放入了同步 skill 仓库里的 Image2 生成示例图，方便先看效果，再回到本地工具里改 prompt、换尺寸、保存到图片墙。</p>
+          <h2>Image2 生成预览墙。</h2>
+          <p class="lead">这些示例来自同步进项目的 prompt skill 案例，放在页面里用来先看风格，再回到本地工具里改 prompt。</p>
         </div>
         <div class="preview-grid">
           <figure class="preview-shot">
+            <img src="previews/slides.jpg" alt="Illustrated Momotaro presentation generated preview">
+            <figcaption><strong>插画式故事幻灯片</strong>适合故事脚本、课程页和内容分镜预览。</figcaption>
+          </figure>
+          <figure class="preview-shot">
             <img src="previews/vr.jpg" alt="VR headset exploded view poster generated preview">
-            <figcaption><strong>VR 头显爆炸视图</strong>硬件结构海报风格，适合产品拆解和说明图。</figcaption>
+            <figcaption><strong>VR 头显爆炸视图</strong>硬件结构海报和产品说明图。</figcaption>
           </figure>
           <figure class="preview-shot">
             <img src="previews/map.jpg" alt="Hand drawn city food map generated preview">
-            <figcaption><strong>手绘城市美食地图</strong>适合地图、活动路线和生活方式内容。</figcaption>
-          </figure>
-          <figure class="preview-shot">
-            <img src="previews/ui.jpg" alt="E-commerce livestream UI mockup generated preview">
-            <figcaption><strong>电商直播 UI 样机</strong>把界面、商品和氛围放在同一张图里。</figcaption>
+            <figcaption><strong>手绘城市美食地图</strong>活动路线、地图和生活方式内容。</figcaption>
           </figure>
           <figure class="preview-shot">
             <img src="previews/action.jpg" alt="Anime martial arts duel generated preview">
-            <figcaption><strong>动漫动作场景</strong>用于测试角色、光影、动作和构图控制。</figcaption>
+            <figcaption><strong>动漫动作场景</strong>角色、光影、动作和构图测试。</figcaption>
           </figure>
           <figure class="preview-shot">
             <img src="previews/info.jpg" alt="3D stone steps evolution infographic generated preview">
-            <figcaption><strong>3D 演化信息图</strong>适合流程、阶段、路线图和概念解释。</figcaption>
+            <figcaption><strong>3D 演化信息图</strong>流程、阶段、路线图和概念解释。</figcaption>
           </figure>
           <figure class="preview-shot">
             <img src="previews/portrait.jpg" alt="Futuristic holographic portrait generated preview">
-            <figcaption><strong>未来感全息肖像</strong>适合头像、封面和视觉风格测试。</figcaption>
+            <figcaption><strong>未来感全息肖像</strong>头像、封面和视觉风格探索。</figcaption>
           </figure>
         </div>
-        <p class="preview-note">
-          Preview images synced from <a href="https://github.com/YouMind-OpenLab/awesome-gpt-image-2">YouMind-OpenLab/awesome-gpt-image-2</a>, licensed under CC BY 4.0.
-        </p>
-      </div>
-    </section>
-
-    <section id="interface">
-      <div class="wrap">
-        <div class="section-heading">
-          <h2>Interface areas built for daily image work.</h2>
-          <p class="lead">Like Code Island, this page treats the product as a set of clear states: setup, skill selection, generation, and saved results.</p>
-        </div>
-        <div class="ui-grid">
-          <figure class="shot">
-            <img src="previews/vr.jpg" alt="Product poster generated prompt skill preview">
-            <figcaption>Skill preview: product and hardware prompts can produce polished explanatory posters.</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="previews/map.jpg" alt="Map illustration generated prompt skill preview">
-            <figcaption>Skill library: sync 333+ prompt cases from YouMind and EvoLinkAI into a local JSON store.</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="previews/ui.jpg" alt="Interface mockup generated prompt skill preview">
-            <figcaption>Generation panel: official native size plus final output size keeps API calls predictable.</figcaption>
-          </figure>
-          <figure class="shot">
-            <img src="previews/info.jpg" alt="Infographic generated prompt skill preview">
-            <figcaption>Image wall: saved results can be previewed, downloaded, or deleted from the local gallery.</figcaption>
-          </figure>
-        </div>
+        <p class="preview-note">Preview images synced from <a href="https://github.com/YouMind-OpenLab/awesome-gpt-image-2">YouMind-OpenLab/awesome-gpt-image-2</a>, licensed under CC BY 4.0.</p>
       </div>
     </section>
 
     <section id="how">
       <div class="wrap">
         <div class="section-heading">
-          <h2>From prompt skill to local image file.</h2>
-          <p class="lead">The app keeps the thin browser UI and the API credentials separated by a local Node service.</p>
+          <h2>从 Skill 到本地文件。</h2>
+          <p class="lead">浏览器只负责操作体验，真正的 API 调用和文件保存都由本地 Node 服务处理。</p>
         </div>
         <div class="flow">
-          <div class="flow-step">
-            <span>01</span>
-            <strong>Choose a skill</strong>
-            <p>Select a scene, edit placeholders, or translate the current prompt into Chinese.</p>
-          </div>
-          <div class="flow-step">
-            <span>02</span>
-            <strong>Generate natively</strong>
-            <p>The local service calls OpenAI with supported image sizes and saved API settings.</p>
-          </div>
-          <div class="flow-step">
-            <span>03</span>
-            <strong>Upscale locally</strong>
-            <p>Sharp resizes and encodes the image into the final 2K, 4K, or custom output.</p>
-          </div>
-          <div class="flow-step">
-            <span>04</span>
-            <strong>Save to wall</strong>
-            <p>The image and metadata are written to the local gallery for preview and download.</p>
-          </div>
+          <div class="flow-step"><span>01</span><strong>Choose skill</strong><p>选一个场景，替换占位词，或者把英文案例翻译为中文。</p></div>
+          <div class="flow-step"><span>02</span><strong>Generate native</strong><p>用官方支持尺寸调用 GPT Image 2，保持请求稳定可复现。</p></div>
+          <div class="flow-step"><span>03</span><strong>Upscale local</strong><p>本地 sharp 负责最终 2K、4K 或自定义尺寸输出。</p></div>
+          <div class="flow-step"><span>04</span><strong>Save wall</strong><p>图片和元数据写入本地图片墙，方便预览、下载和删除。</p></div>
         </div>
       </div>
     </section>
 
     <section class="download-band">
       <div class="wrap download-inner">
-        <h2>Run GPT Image 2 like a local creative workstation.</h2>
+        <div>
+          <h2>把 GPT Image 2 变成本地创作桌面。</h2>
+          <p class="lead">一键启动 Node 服务，浏览器打开控制台，开始生成和整理自己的图片库。</p>
+        </div>
         <div class="actions">
           <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">Open repository</a>
           <a class="button" href="https://github.com/Iroha-P/image2-local-studio#quick-start--快速开始">Read setup</a>
@@ -634,7 +583,7 @@
 
   <footer>
     <div class="wrap">
-      <span>Local Node.js app. GitHub Pages hosts this static product page.</span>
+      <span>Local Node.js app. GitHub Pages hosts this static project page.</span>
       <a href="https://github.com/Iroha-P/image2-local-studio">github.com/Iroha-P/image2-local-studio</a>
     </div>
   </footer>
