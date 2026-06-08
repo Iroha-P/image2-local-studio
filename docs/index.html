@@ -8,175 +8,350 @@
   <meta property="og:title" content="Image2 Local Studio">
   <meta property="og:description" content="Local GPT Image 2 studio with prompt skills, native sizes, 4K upscaling, and a saved image wall.">
   <meta property="og:image" content="previews/vr.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     :root {
-      color-scheme: light;
-      --ink: #1d1d1f;
-      --muted: #6e6e73;
-      --soft: #f5f5f7;
-      --surface: #ffffff;
-      --line: rgba(0, 0, 0, .1);
-      --blue: #0071e3;
-      --orange: #ff8a00;
-      --cyan: #36a6ff;
-      --green: #00a879;
-      --graphite: #2d2d2f;
-      --shadow: 0 18px 48px rgba(0, 0, 0, .12);
-      --radius: 8px;
-      --amber: var(--orange);
-      --teal: var(--green);
+      color-scheme: dark;
+      --void: #090014;
+      --fg: #e0e0e0;
+      --muted: rgba(224, 224, 224, .68);
+      --dim: rgba(224, 224, 224, .46);
+      --panel: rgba(26, 16, 60, .82);
+      --panel-strong: rgba(12, 4, 28, .92);
+      --border: #2d1b4e;
+      --magenta: #ff00ff;
+      --cyan: #00ffff;
+      --orange: #ff9900;
+      --blue: #6c5cff;
+      --green: #22ff99;
+      --grid: rgba(255, 0, 255, .34);
+      --wrap: min(1360px, calc(100% - 32px));
+      --heading: "Orbitron", "Segoe UI", system-ui, sans-serif;
+      --mono: "Share Tech Mono", "Cascadia Mono", Consolas, monospace;
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
-      line-height: 1.56;
-      background: var(--soft);
+      min-width: 320px;
+      color: var(--fg);
+      font-family: var(--mono);
+      line-height: 1.58;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255, 0, 255, .18), transparent 28%),
+        radial-gradient(circle at 88% 10%, rgba(0, 255, 255, .14), transparent 30%),
+        linear-gradient(180deg, #090014 0%, #130024 54%, #090014 100%);
       overflow-x: hidden;
     }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(18, 16, 20, 0) 50%, rgba(0, 0, 0, .26) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, .06), rgba(0, 255, 0, .018), rgba(0, 0, 255, .06));
+      background-size: 100% 4px, 100% 100%;
+      mix-blend-mode: screen;
+      opacity: .55;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      left: -40%;
+      right: -40%;
+      bottom: -34vh;
+      height: 58vh;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(transparent 94%, rgba(255, 0, 255, .72) 95%),
+        linear-gradient(90deg, transparent 94%, rgba(0, 255, 255, .48) 95%);
+      background-size: 42px 42px;
+      transform: perspective(560px) rotateX(62deg) scale(1.55);
+      transform-origin: top center;
+      mask-image: linear-gradient(to bottom, transparent, black 24%, black 78%, transparent);
+    }
+
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
-    .wrap { width: min(1240px, calc(100% - 44px)); margin: 0 auto; }
-    .hero-grid > *, .studio-board, .control-rail, .canvas, .field, .prompt-box, .workflow-card, .preview-shot { min-width: 0; }
+    .wrap { width: var(--wrap); margin: 0 auto; }
+    .hero-grid > *, .terminal, .panel, .shot, .feature, .flow-step { min-width: 0; }
 
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
-      border-bottom: 1px solid rgba(0, 0, 0, .08);
-      background: rgba(251, 251, 253, .78);
-      backdrop-filter: blur(20px);
+      z-index: 40;
+      border-bottom: 2px solid rgba(0, 255, 255, .3);
+      background: rgba(9, 0, 20, .76);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 0 26px rgba(0, 255, 255, .14);
     }
     .topbar-inner {
-      min-height: 56px;
+      min-height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 22px;
     }
-    .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 760; }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--heading);
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
     .brand-mark {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
-      border-radius: var(--radius);
-      color: #fff;
-      background: linear-gradient(135deg, #151516, #3e8cff);
-      font-weight: 850;
+      color: #080014;
+      background: linear-gradient(135deg, var(--orange), var(--magenta) 52%, var(--cyan));
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 18px rgba(255, 0, 255, .62), inset 0 0 16px rgba(255, 255, 255, .22);
+      clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
     }
-    .nav { display: flex; gap: 22px; color: #424245; font-size: 13px; font-weight: 600; }
-    .nav a { transition: color .2s ease; }
-    .nav a:hover { color: var(--blue); }
-    .nav a:focus-visible, .button:focus-visible { outline: 3px solid rgba(0,113,227,.35); outline-offset: 3px; }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(12px, 2vw, 22px);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .nav a {
+      position: relative;
+      padding: 8px 0;
+      transition: color .18s linear, text-shadow .18s linear;
+    }
+    .nav a::before { content: ">"; color: var(--magenta); margin-right: 5px; opacity: 0; transition: opacity .18s linear; }
+    .nav a:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); }
+    .nav a:hover::before { opacity: 1; }
+    .nav a:focus-visible, .button:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
+      box-shadow: 0 0 22px rgba(0, 255, 255, .55);
+    }
 
     .hero {
-      padding: clamp(52px, 7vw, 86px) 0 clamp(58px, 8vw, 96px);
+      position: relative;
+      overflow: hidden;
+      padding: clamp(74px, 9vw, 124px) 0 clamp(78px, 10vw, 132px);
+      border-bottom: 2px solid rgba(255, 0, 255, .24);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 210px;
+      pointer-events: none;
       background:
-        linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 62%, #fff 100%);
-      border-bottom: 1px solid var(--line);
+        linear-gradient(180deg, transparent, rgba(255, 153, 0, .09) 28%, rgba(255, 0, 255, .08) 52%, transparent),
+        repeating-linear-gradient(0deg, rgba(255, 153, 0, .22) 0 2px, transparent 2px 16px);
+      opacity: .78;
     }
     .hero-grid {
+      position: relative;
+      z-index: 2;
       display: grid;
-      grid-template-columns: minmax(0, .76fr) minmax(650px, 1.24fr);
-      gap: clamp(34px, 5vw, 70px);
+      grid-template-columns: minmax(0, .62fr) minmax(820px, 1.38fr);
+      gap: clamp(24px, 3vw, 42px);
       align-items: center;
     }
     .eyebrow {
       width: fit-content;
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      padding: 7px 10px;
-      border: 1px solid rgba(0, 0, 0, .08);
-      border-radius: var(--radius);
-      color: #bf5a00;
-      background: rgba(255, 255, 255, .8);
-      font-size: 12px;
-      font-weight: 760;
+      gap: 10px;
+      padding: 8px 12px;
+      color: var(--orange);
+      background: rgba(255, 153, 0, .08);
+      border: 2px solid rgba(255, 153, 0, .72);
+      box-shadow: 0 0 18px rgba(255, 153, 0, .22);
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
     }
-    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+    .eyebrow::before { content: ">"; color: var(--cyan); text-shadow: 0 0 8px var(--cyan); }
+    h1, h2, h3 {
+      font-family: var(--heading);
+      text-transform: uppercase;
+    }
     h1 {
-      max-width: 760px;
-      margin: 18px 0 18px;
-      font-size: clamp(56px, 7vw, 96px);
-      line-height: .94;
-      letter-spacing: -.04em;
+      max-width: 820px;
+      margin: 24px 0 22px;
+      font-size: clamp(48px, 7.9vw, 112px);
+      line-height: .86;
+      letter-spacing: .01em;
       text-wrap: balance;
     }
+    .gradient-text {
+      display: block;
+      color: transparent;
+      background: linear-gradient(90deg, var(--orange), var(--magenta), var(--cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      filter: drop-shadow(0 0 24px rgba(255, 0, 255, .56));
+    }
     .hero-copy {
-      max-width: 610px;
+      max-width: 640px;
       margin: 0;
       color: var(--muted);
-      font-size: clamp(19px, 1.9vw, 23px);
+      font-size: clamp(18px, 1.7vw, 22px);
       text-wrap: pretty;
     }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .hero-copy strong { color: var(--cyan); text-shadow: 0 0 12px rgba(0, 255, 255, .5); }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
     .button {
-      min-height: 44px;
+      min-height: 48px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0 20px;
-      border: 1px solid rgba(0, 0, 0, .12);
-      border-radius: var(--radius);
-      background: #fff;
-      color: var(--ink);
+      padding: 0 22px;
+      border: 2px solid var(--cyan);
+      color: var(--cyan);
+      background: rgba(0, 255, 255, .04);
+      font-family: var(--mono);
+      font-size: 15px;
       font-weight: 700;
-      transition: color .2s ease, background .2s ease, transform .2s ease;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+      box-shadow: 0 0 18px rgba(0, 255, 255, .22);
+      transition: color .18s linear, background .18s linear, box-shadow .18s linear, transform .18s linear, border-color .18s linear;
     }
-    .button.primary { color: #fff; border-color: var(--blue); background: var(--blue); }
-    .button:hover { color: var(--blue); }
-    .button.primary:hover { color: #fff; background: #0077ed; }
-    .button:active { transform: scale(.985); }
+    .button.primary {
+      border-color: var(--magenta);
+      color: #fff;
+      background: var(--magenta);
+      box-shadow: 0 0 22px rgba(255, 0, 255, .52);
+    }
+    .button:hover {
+      color: #060014;
+      background: var(--cyan);
+      border-color: var(--cyan);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 28px rgba(0, 255, 255, .72);
+    }
+    .button.primary:hover {
+      color: #060014;
+      background: linear-gradient(90deg, var(--orange), var(--magenta), var(--cyan));
+      box-shadow: 0 0 34px rgba(255, 0, 255, .76);
+    }
+
+    .terminal {
+      position: relative;
+      max-width: 100%;
+      width: min(880px, 100%);
+      justify-self: end;
+      border: 2px solid var(--cyan);
+      background: rgba(0, 0, 0, .72);
+      box-shadow: 0 0 24px rgba(0, 255, 255, .25), 0 0 56px rgba(255, 0, 255, .16);
+      transform: perspective(900px) rotateY(-4deg) rotateX(1deg);
+    }
+    .terminal::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      pointer-events: none;
+      border: 2px solid rgba(255, 0, 255, .28);
+      transform: translate(10px, 10px);
+      z-index: -1;
+    }
+    .window-bar {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      overflow: hidden;
+      padding: 0 14px;
+      border-bottom: 2px solid rgba(0, 255, 255, .58);
+      background: linear-gradient(90deg, rgba(0, 255, 255, .13), rgba(255, 0, 255, .08));
+      color: var(--fg);
+      font-family: var(--heading);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .window-bar > span:last-child {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .dots { display: inline-flex; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 999px; box-shadow: 0 0 10px currentColor; }
+    .dot.magenta { color: var(--magenta); background: var(--magenta); }
+    .dot.cyan { color: var(--cyan); background: var(--cyan); }
+    .dot.orange { color: var(--orange); background: var(--orange); }
 
     .studio-board {
       display: grid;
-      grid-template-columns: 202px minmax(0, 1fr);
-      gap: 12px;
-      min-height: 458px;
-      padding: 12px;
-      border: 1px solid rgba(0, 0, 0, .08);
-      border-radius: var(--radius);
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px;
+      overflow: hidden;
       background:
-        linear-gradient(135deg, rgba(0,113,227,.1), transparent 32%),
-        #161617;
-      box-shadow: var(--shadow);
+        linear-gradient(135deg, rgba(255, 0, 255, .16), transparent 34%),
+        rgba(26, 16, 60, .58);
     }
     .control-rail {
       display: grid;
       align-content: start;
-      gap: 10px;
-      padding: 14px;
-      border-radius: var(--radius);
-      color: #f5f5f7;
-      background: rgba(0, 0, 0, .42);
-      border: 1px solid rgba(255,255,255,.08);
+      gap: 11px;
+      padding: 16px;
+      border: 2px solid rgba(255, 0, 255, .48);
+      background: rgba(9, 0, 20, .8);
     }
-    .rail-label { color: #ffb340; font-size: 12px; font-weight: 800; }
+    .rail-label {
+      color: var(--orange);
+      font-family: var(--heading);
+      font-size: 13px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(255, 153, 0, .55);
+    }
     .field, .rail-button {
       min-height: 38px;
       display: flex;
       align-items: center;
       padding: 0 12px;
-      border: 1px solid rgba(255, 255, 255, .12);
-      border-radius: 6px;
-      color: #d2d2d7;
-      background: rgba(255, 255, 255, .04);
-      font-size: 12px;
-      font-weight: 680;
+      border: 2px solid var(--border);
+      color: var(--fg);
+      background: rgba(255, 255, 255, .035);
+      font-size: 13px;
+      text-transform: lowercase;
     }
-    .rail-button { justify-content: center; color: #fff; background: var(--blue); border-color: transparent; font-weight: 780; }
+    .field::before { content: "> "; color: var(--cyan); }
+    .rail-button {
+      justify-content: center;
+      margin-top: 6px;
+      color: #050014;
+      background: var(--cyan);
+      border-color: var(--cyan);
+      font-weight: 900;
+      text-transform: uppercase;
+      box-shadow: 0 0 18px rgba(0, 255, 255, .42);
+    }
+    .rail-button::before { content: ""; }
     .canvas {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
       overflow: hidden;
-      border-radius: var(--radius);
-      background: #f5f5f7;
-      color: var(--ink);
+      border: 2px solid rgba(0, 255, 255, .34);
+      background: rgba(4, 0, 11, .8);
     }
     .canvas-head {
       display: flex;
@@ -184,113 +359,371 @@
       justify-content: space-between;
       gap: 14px;
       flex-wrap: wrap;
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(0,0,0,.08);
+      padding: 15px 18px;
+      border-bottom: 2px solid rgba(0, 255, 255, .28);
+      background: rgba(0, 255, 255, .06);
     }
-    .canvas-head strong { font-size: 22px; letter-spacing: -.02em; }
-    .status-pill { color: var(--green); font-size: 12px; font-weight: 760; }
-    .mosaic { display: grid; grid-template-columns: 1.16fr 1fr 1fr; gap: 10px; padding: 12px; }
-    .mosaic figure {
+    .canvas-head strong {
+      color: var(--cyan);
+      font-family: var(--heading);
+      font-size: clamp(18px, 2vw, 25px);
+      text-transform: uppercase;
+      text-shadow: 0 0 9px rgba(0, 255, 255, .65);
+    }
+    .status-pill {
+      color: var(--green);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(34, 255, 153, .5);
+    }
+    .mosaic {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      padding: 14px;
+    }
+    .mosaic figure, .preview-shot {
+      position: relative;
       margin: 0;
       overflow: hidden;
-      min-height: 248px;
-      border-radius: var(--radius);
-      background: #fff;
+      border: 2px solid rgba(255, 0, 255, .36);
+      background: var(--panel-strong);
     }
-    .mosaic img { width: 100%; height: 100%; min-height: 248px; object-fit: cover; }
-    .prompt-strip { display: grid; grid-template-columns: 1.1fr .9fr; gap: 10px; padding: 0 12px 12px; }
+    .mosaic figure::after, .preview-shot::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255, 0, 255, .18), transparent 38%, rgba(0, 255, 255, .15));
+      mix-blend-mode: screen;
+    }
+    .mosaic img {
+      width: 100%;
+      height: 182px;
+      min-height: 0;
+      object-fit: cover;
+      filter: saturate(1.16) contrast(1.05);
+    }
+    .prompt-strip {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+      padding: 0 14px 14px;
+    }
     .prompt-box {
-      min-height: 94px;
-      padding: 14px;
-      border-radius: var(--radius);
-      background: #fff;
+      min-height: 84px;
+      padding: 16px;
+      border: 2px solid rgba(0, 255, 255, .32);
+      background: rgba(26, 16, 60, .74);
     }
-    .prompt-box span { color: var(--muted); font-size: 11px; font-weight: 760; text-transform: uppercase; letter-spacing: .06em; }
-    .prompt-box strong { display: block; margin-top: 8px; font-size: 18px; }
+    .prompt-box span {
+      color: var(--orange);
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .prompt-box span::before { content: "> "; color: var(--magenta); }
+    .prompt-box strong {
+      display: block;
+      margin-top: 8px;
+      color: var(--fg);
+      font-family: var(--heading);
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.36;
+    }
 
-    section { padding: clamp(64px, 8vw, 104px) 0; border-bottom: 1px solid var(--line); background: #fff; }
-    section:nth-of-type(even) { background: var(--soft); }
-    .section-heading { max-width: 760px; margin-bottom: 34px; }
-    h2 { margin: 0 0 12px; font-size: clamp(36px, 5vw, 64px); line-height: 1.02; letter-spacing: -.035em; text-wrap: balance; }
-    .lead { margin: 0; color: var(--muted); font-size: clamp(17px, 1.7vw, 20px); text-wrap: pretty; }
+    section {
+      position: relative;
+      padding: clamp(70px, 8vw, 112px) 0;
+      border-bottom: 2px solid rgba(45, 27, 78, .82);
+    }
+    section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255, 0, 255, .22) 1px, transparent 1px);
+      background-size: 24px 24px;
+      mask-image: linear-gradient(90deg, transparent, black 14%, black 86%, transparent);
+      opacity: .18;
+    }
+    .section-heading {
+      max-width: 820px;
+      margin-bottom: 36px;
+    }
+    h2 {
+      margin: 0 0 14px;
+      color: var(--fg);
+      font-size: clamp(34px, 5vw, 66px);
+      line-height: .98;
+      letter-spacing: .02em;
+      text-wrap: balance;
+      text-shadow: 0 0 24px rgba(255, 255, 255, .18);
+    }
+    h2 .accent {
+      color: transparent;
+      background: linear-gradient(90deg, var(--orange), var(--magenta), var(--cyan));
+      -webkit-background-clip: text;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(255, 0, 255, .36));
+    }
+    .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(17px, 1.65vw, 20px);
+      text-wrap: pretty;
+    }
 
-    .feature-grid, .preview-grid, .flow { display: grid; gap: 16px; }
+    .feature-grid, .preview-grid, .flow {
+      display: grid;
+      gap: 18px;
+    }
     .feature-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .feature, .preview-shot, .flow-step {
-      border-radius: var(--radius);
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.06);
+    .feature, .flow-step, .state, .workflow-card {
+      border: 2px solid rgba(255, 0, 255, .28);
+      border-top-color: rgba(0, 255, 255, .72);
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 0 24px rgba(0, 255, 255, .08);
+      transition: transform .18s linear, border-color .18s linear, box-shadow .18s linear;
     }
-    .feature { min-height: 178px; padding: 22px; }
-    .feature i { width: 36px; height: 5px; display: block; margin-bottom: 20px; border-radius: 999px; background: var(--dot); }
-    .feature strong { display: block; margin-bottom: 9px; font-size: 18px; }
-    .feature p, .flow-step p { margin: 0; color: var(--muted); font-size: 14px; }
+    .feature:hover, .flow-step:hover, .workflow-card:hover, .preview-shot:hover {
+      transform: translateY(-6px);
+      border-color: var(--cyan);
+      box-shadow: 0 0 28px rgba(0, 255, 255, .28), 0 0 38px rgba(255, 0, 255, .18);
+    }
+    .feature {
+      min-height: 206px;
+      padding: 24px;
+    }
+    .feature i {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      margin: 0 0 24px 4px;
+      border: 2px solid var(--cyan);
+      background: rgba(0, 255, 255, .08);
+      transform: rotate(45deg);
+      box-shadow: 0 0 18px rgba(0, 255, 255, .32);
+      transition: transform .18s linear, background .18s linear;
+    }
+    .feature:hover i { transform: rotate(90deg); background: var(--accent); }
+    .feature i::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent);
+    }
+    .feature strong, .flow-step strong, .workflow-card strong {
+      display: block;
+      color: var(--cyan);
+      font-family: var(--heading);
+      font-size: 20px;
+      line-height: 1.25;
+      text-transform: uppercase;
+      text-shadow: 0 0 7px rgba(0, 255, 255, .6);
+    }
+    .feature p, .flow-step p, .workflow-card span {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
 
-    .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .75fr); gap: 28px; align-items: center; }
-    .workflow-panel { display: grid; gap: 12px; }
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(320px, .76fr);
+      gap: 30px;
+      align-items: center;
+    }
+    .workflow-panel { display: grid; gap: 14px; }
     .workflow-card {
       display: grid;
-      grid-template-columns: 138px minmax(0, 1fr);
-      gap: 16px;
+      grid-template-columns: 148px minmax(0, 1fr);
+      gap: 18px;
       align-items: center;
-      min-height: 132px;
-      padding: 12px;
-      border-radius: var(--radius);
-      background: #fff;
+      min-height: 138px;
+      padding: 14px;
     }
-    .workflow-card img { width: 138px; height: 108px; object-fit: cover; border-radius: var(--radius); }
-    .workflow-card b { color: var(--blue); font-size: 13px; }
-    .workflow-card strong { display: block; margin: 4px 0; font-size: 18px; }
-    .workflow-card span { color: var(--muted); font-size: 14px; }
-    .state-list { display: grid; gap: 12px; }
+    .workflow-card img {
+      width: 148px;
+      height: 112px;
+      object-fit: cover;
+      border: 2px solid rgba(0, 255, 255, .34);
+      filter: saturate(1.12) contrast(1.04);
+    }
+    .workflow-card b {
+      color: var(--orange);
+      font-size: 13px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .state-list { display: grid; gap: 14px; }
     .state {
       display: grid;
-      grid-template-columns: 56px 1fr;
-      gap: 14px;
+      grid-template-columns: 64px 1fr;
+      gap: 16px;
       align-items: center;
-      min-height: 86px;
-      padding: 12px;
-      border-radius: var(--radius);
-      background: #fff;
+      min-height: 94px;
+      padding: 14px;
     }
-    .state-dot { width: 54px; height: 54px; display: grid; place-items: center; border-radius: var(--radius); color: #fff; background: var(--dot); font-weight: 820; }
-    .state strong { display: block; }
-    .state span { color: var(--muted); font-size: 14px; }
+    .state-dot {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      color: #070014;
+      background: var(--accent);
+      border: 2px solid var(--fg);
+      font-family: var(--heading);
+      font-weight: 900;
+      box-shadow: 0 0 22px var(--accent);
+      clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%);
+    }
+    .state strong {
+      display: block;
+      color: var(--fg);
+      font-family: var(--heading);
+      font-size: 17px;
+      text-transform: uppercase;
+    }
+    .state span { color: var(--muted); font-size: 15px; }
 
     .preview-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .preview-shot { overflow: hidden; }
-    .preview-shot img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
-    .preview-shot figcaption { padding: 15px 16px; color: var(--muted); font-size: 14px; }
-    .preview-shot strong { display: block; color: var(--ink); font-size: 15px; }
-    .preview-note { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
+    .preview-shot {
+      transition: transform .18s linear, border-color .18s linear, box-shadow .18s linear;
+    }
+    .preview-shot img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      filter: saturate(1.16) contrast(1.06);
+    }
+    .preview-shot figcaption {
+      position: relative;
+      z-index: 2;
+      min-height: 116px;
+      padding: 16px;
+      color: var(--muted);
+      border-top: 2px solid rgba(0, 255, 255, .32);
+      background: rgba(9, 0, 20, .84);
+      font-size: 14px;
+    }
+    .preview-shot strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--cyan);
+      font-family: var(--heading);
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+    .preview-note {
+      margin: 18px 0 0;
+      color: var(--dim);
+      font-size: 13px;
+    }
+    .preview-note a { color: var(--cyan); text-shadow: 0 0 8px rgba(0, 255, 255, .44); }
 
     .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .flow-step { min-height: 168px; padding: 22px; }
-    .flow-step span { color: var(--blue); font-weight: 780; }
-    .flow-step strong { display: block; margin: 12px 0 8px; font-size: 18px; }
+    .flow-step {
+      min-height: 190px;
+      padding: 24px;
+    }
+    .flow-step span {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: var(--magenta);
+      font-family: var(--heading);
+      font-size: 18px;
+      text-shadow: 0 0 12px rgba(255, 0, 255, .6);
+    }
 
-    .download-band { background: #1d1d1f; color: #f5f5f7; }
-    .download-band .lead { color: #a1a1a6; }
-    .download-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-    footer { padding: 30px 0; color: var(--muted); background: #fff; }
-    footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 14px; }
+    .download-band {
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(255, 0, 255, .12), rgba(0, 255, 255, .08)),
+        rgba(6, 0, 14, .94);
+    }
+    .download-band::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--orange), var(--magenta), var(--cyan));
+      box-shadow: 0 0 24px rgba(255, 0, 255, .8);
+    }
+    .download-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 26px;
+      flex-wrap: wrap;
+      border: 2px solid rgba(0, 255, 255, .42);
+      border-top-color: var(--magenta);
+      padding: clamp(24px, 4vw, 42px);
+      background: rgba(26, 16, 60, .62);
+      box-shadow: 0 0 42px rgba(0, 255, 255, .16);
+    }
+    .download-inner h2 { max-width: 740px; }
+    footer {
+      padding: 30px 0;
+      color: var(--dim);
+      background: rgba(9, 0, 20, .96);
+    }
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 14px;
+    }
+    footer a { color: var(--cyan); }
 
-    @media (max-width: 940px) {
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 1040px) {
       .nav { display: none; }
       .hero-grid, .studio-board, .workspace-grid, .prompt-strip { grid-template-columns: 1fr; }
+      .terminal { transform: none; }
+      .terminal::after { transform: translate(5px, 5px); }
       .control-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .feature-grid, .preview-grid, .flow { grid-template-columns: 1fr; }
-      .mosaic { grid-template-columns: 1fr; }
+      .feature-grid, .preview-grid, .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mosaic { grid-template-columns: 1fr 1fr; }
+      .mosaic figure:first-child { grid-column: 1 / -1; }
     }
-    @media (max-width: 560px) {
-      .wrap { width: auto; margin-left: 14px; margin-right: 14px; }
-      .topbar-inner { min-height: 56px; }
-      h1 { font-size: 42px; line-height: 1; }
-      .hero { min-height: auto; padding-top: 48px; }
-      .control-rail { grid-template-columns: 1fr; }
+
+    @media (max-width: 640px) {
+      .wrap { width: auto; margin-left: 8px; margin-right: 8px; }
+      .topbar-inner { min-height: 58px; }
+      .brand { font-size: 13px; }
+      .brand-mark { width: 34px; height: 34px; }
+      .terminal::after { transform: none; }
+      .window-bar { gap: 10px; padding: 0 10px; }
+      .window-bar > span:last-child { max-width: calc(100vw - 82px); }
+      .studio-board { padding: 8px; gap: 10px; }
+      .control-rail, .canvas-head, .mosaic, .prompt-strip { padding-left: 8px; padding-right: 8px; }
+      h1 { font-size: 43px; line-height: .95; }
+      h2 { font-size: 34px; line-height: 1.04; }
+      .hero { padding-top: 54px; }
       .actions .button { width: 100%; }
+      .control-rail, .mosaic, .feature-grid, .preview-grid, .flow, .workflow-card { grid-template-columns: 1fr; }
+      .workflow-card img { width: 100%; height: auto; aspect-ratio: 4 / 3; }
+      .state { grid-template-columns: 1fr; }
       .canvas-head { display: block; }
       .status-pill { display: block; margin-top: 6px; }
+      .mosaic figure:first-child { grid-column: auto; }
+      .mosaic img { min-height: 220px; }
     }
   </style>
 </head>
@@ -315,39 +748,45 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <div class="eyebrow">Local GPT Image 2 workspace</div>
-          <h1>Image2 Local Studio</h1>
-          <p class="hero-copy">一个本地生图控制台：管理 OpenAI API、调用中文 Prompt Skill、生成官方尺寸图片，再把 2K/4K 超分结果保存进本地图片墙。</p>
+          <div class="eyebrow">Local GPT Image 2 terminal</div>
+          <h1><span>Image2</span><span class="gradient-text">Local Studio</span></h1>
+          <p class="hero-copy">一个本地 GPT Image 2 生图工作台，把 <strong>API 配置</strong>、官方尺寸、4K 超分、中文 Prompt Skill 和图片墙放进同一个可一键启动的界面。</p>
           <div class="actions">
             <a class="button primary" href="https://github.com/Iroha-P/image2-local-studio">Open repository</a>
             <a class="button" href="#previews">View previews</a>
             <a class="button" href="#workspace">Explore workspace</a>
           </div>
         </div>
-        <div class="studio-board" aria-label="Image2 Local Studio control console">
-          <aside class="control-rail">
-            <div class="rail-label">GPT IMAGE 2</div>
-            <div class="field">model: gpt-image-2</div>
-            <div class="field">native: 1024 x 1024</div>
-            <div class="field">final: 4K upscale</div>
-            <div class="field">quality: high</div>
-            <div class="field">format: png</div>
-            <div class="field">skill presets: 333+</div>
-            <div class="rail-button">Generate</div>
-          </aside>
-          <div class="canvas">
-            <div class="canvas-head">
-              <strong>Prompt Skill Gallery</strong>
-              <span class="status-pill">Saved image wall ready</span>
-            </div>
-            <div class="mosaic">
-              <figure><img src="previews/slides.jpg" alt="Illustrated presentation generated preview"></figure>
-              <figure><img src="previews/action.jpg" alt="Action scene generated preview"></figure>
-              <figure><img src="previews/portrait.jpg" alt="Holographic portrait generated preview"></figure>
-            </div>
-            <div class="prompt-strip">
-              <div class="prompt-box"><span>Current skill</span><strong>产品爆炸视图 / 手绘地图 / 信息图</strong></div>
-              <div class="prompt-box"><span>Output</span><strong>Native API size + local final export</strong></div>
+        <div class="terminal" aria-label="Image2 Local Studio control console">
+          <div class="window-bar">
+            <span class="dots"><i class="dot magenta"></i><i class="dot cyan"></i><i class="dot orange"></i></span>
+            <span>image2.local / prompt-skill.gallery</span>
+          </div>
+          <div class="studio-board">
+            <aside class="control-rail">
+              <div class="rail-label">GPT Image 2</div>
+              <div class="field">model: gpt-image-2</div>
+              <div class="field">native: 1024 x 1024</div>
+              <div class="field">final: 4K upscale</div>
+              <div class="field">quality: high</div>
+              <div class="field">format: png</div>
+              <div class="field">skill presets: 333+</div>
+              <div class="rail-button">Generate</div>
+            </aside>
+            <div class="canvas">
+              <div class="canvas-head">
+                <strong>Prompt Skill Gallery</strong>
+                <span class="status-pill">Saved image wall ready</span>
+              </div>
+              <div class="mosaic">
+                <figure><img src="previews/slides.jpg" alt="插画故事幻灯片生成预览"></figure>
+                <figure><img src="previews/action.jpg" alt="动作场景生成预览"></figure>
+                <figure><img src="previews/portrait.jpg" alt="全息人物生成预览"></figure>
+              </div>
+              <div class="prompt-strip">
+                <div class="prompt-box"><span>Current skill</span><strong>产品爆炸视图 / 手绘地图 / 信息图</strong></div>
+                <div class="prompt-box"><span>Output</span><strong>Native API size + local final export</strong></div>
+              </div>
             </div>
           </div>
         </div>
@@ -357,26 +796,26 @@
     <section id="features">
       <div class="wrap">
         <div class="section-heading">
-          <h2>为重复生图工作流做的本地控制台。</h2>
-          <p class="lead">不是单张 prompt 表单，而是把参数、技能、预览、超分和文件管理放在一起。</p>
+          <h2>为重复生图工作流做的 <span class="accent">neon console</span></h2>
+          <p class="lead">不是单张 prompt 表单，而是把参数、技能、预览、超分和文件管理放在一起，像一个本地创作终端。</p>
         </div>
         <div class="feature-grid">
-          <article class="feature" style="--dot: var(--amber)">
+          <article class="feature" style="--accent: var(--magenta)">
             <i></i>
             <strong>API Control</strong>
             <p>OpenAI key 只保存在本地，支持模型、质量、背景、格式和安全参数配置。</p>
           </article>
-          <article class="feature" style="--dot: var(--teal)">
+          <article class="feature" style="--accent: var(--cyan)">
             <i></i>
             <strong>Native + 4K</strong>
             <p>先按官方支持尺寸生成，再用本地 sharp 导出 2K、4K 或自定义尺寸。</p>
           </article>
-          <article class="feature" style="--dot: var(--blue)">
+          <article class="feature" style="--accent: var(--orange)">
             <i></i>
             <strong>Prompt Skills</strong>
             <p>同步 YouMind 和 EvoLinkAI 的案例，支持中文化、命名、删除、重置和编辑。</p>
           </article>
-          <article class="feature" style="--dot: var(--graphite)">
+          <article class="feature" style="--accent: var(--green)">
             <i></i>
             <strong>Image Wall</strong>
             <p>生成结果落到本地图片墙，保留预览、下载、删除、原始尺寸和导出尺寸。</p>
@@ -389,33 +828,33 @@
       <div class="wrap workspace-grid">
         <div class="workflow-panel" aria-label="Image2 workflow examples">
           <article class="workflow-card">
-            <img src="previews/vr.jpg" alt="Generated product poster thumbnail">
-            <div><b>01 / API SIZE</b><strong>官方尺寸先生成</strong><span>让请求保持在模型支持范围内，再进入本地后处理。</span></div>
+            <img src="previews/vr.jpg" alt="VR 头显产品海报缩略图">
+            <div><b>01 / API size</b><strong>官方尺寸先生成</strong><span>让请求保持在模型支持范围内，再进入本地后处理。</span></div>
           </article>
           <article class="workflow-card">
-            <img src="previews/map.jpg" alt="Generated map thumbnail">
-            <div><b>02 / SKILL EDIT</b><strong>Prompt Skill 可改可重置</strong><span>同步仓库案例以后，在本地按自己的项目改字段。</span></div>
+            <img src="previews/map.jpg" alt="手绘地图生成缩略图">
+            <div><b>02 / Skill edit</b><strong>Prompt Skill 可改可重置</strong><span>同步仓库案例以后，在本地按自己的项目改字段。</span></div>
           </article>
           <article class="workflow-card">
-            <img src="previews/info.jpg" alt="Generated infographic thumbnail">
-            <div><b>03 / FINAL WALL</b><strong>超分后进入图片墙</strong><span>本地保存最终文件和元数据，方便再次下载或清理。</span></div>
+            <img src="previews/info.jpg" alt="信息图生成缩略图">
+            <div><b>03 / Final wall</b><strong>超分后进入图片墙</strong><span>本地保存最终文件和元数据，方便再次下载或清理。</span></div>
           </article>
         </div>
         <div>
           <div class="section-heading">
-            <h2>参数和图库不再分散。</h2>
+            <h2>参数和图库不再 <span class="accent">分散</span></h2>
             <p class="lead">左侧像控制台，右侧像工作板。生成前能看 skill 预览，生成后能直接整理图片。</p>
           </div>
           <div class="state-list">
-            <div class="state" style="--dot: var(--amber)">
+            <div class="state" style="--accent: var(--cyan)">
               <div class="state-dot">1K</div>
               <span><strong>官方原生尺寸</strong>保持 API 调用稳定，不把不支持的尺寸硬塞给模型。</span>
             </div>
-            <div class="state" style="--dot: var(--teal)">
+            <div class="state" style="--accent: var(--magenta)">
               <div class="state-dot">4K</div>
-              <span><strong>本地最终导出</strong>超分和编码在本机完成，适合做封面、海报和素材归档。</span>
+              <span><strong>本地最终导出</strong>超分和编码在本机完成，适合封面、海报和素材归档。</span>
             </div>
-            <div class="state" style="--dot: var(--graphite)">
+            <div class="state" style="--accent: var(--orange)">
               <div class="state-dot">中</div>
               <span><strong>中文 Skill 库</strong>英文案例可以翻译成中文，也可以手动调整为自己的调用模板。</span>
             </div>
@@ -427,33 +866,33 @@
     <section id="previews">
       <div class="wrap">
         <div class="section-heading">
-          <h2>Image2 生成预览墙。</h2>
-          <p class="lead">这些示例来自同步进项目的 prompt skill 案例，放在页面里用来先看风格，再回到本地工具里改 prompt。</p>
+          <h2>Image2 生成 <span class="accent">预览墙</span></h2>
+          <p class="lead">这些示例来自同步进项目的 prompt skill 案例，用来先看风格，再回到本地工具里改 prompt。</p>
         </div>
         <div class="preview-grid">
           <figure class="preview-shot">
-            <img src="previews/slides.jpg" alt="Illustrated Momotaro presentation generated preview">
-            <figcaption><strong>插画式故事幻灯片</strong>适合故事脚本、课程页和内容分镜预览。</figcaption>
+            <img src="previews/slides.jpg" alt="插画式桃太郎故事幻灯片生成预览">
+            <figcaption><strong>Story slides</strong>插画式故事脚本、课程页和内容分镜预览。</figcaption>
           </figure>
           <figure class="preview-shot">
-            <img src="previews/vr.jpg" alt="VR headset exploded view poster generated preview">
-            <figcaption><strong>VR 头显爆炸视图</strong>硬件结构海报和产品说明图。</figcaption>
+            <img src="previews/vr.jpg" alt="VR 头显爆炸视图海报生成预览">
+            <figcaption><strong>Product poster</strong>硬件结构海报和产品说明图。</figcaption>
           </figure>
           <figure class="preview-shot">
-            <img src="previews/map.jpg" alt="Hand drawn city food map generated preview">
-            <figcaption><strong>手绘城市美食地图</strong>活动路线、地图和生活方式内容。</figcaption>
+            <img src="previews/map.jpg" alt="手绘城市美食地图生成预览">
+            <figcaption><strong>Hand-drawn map</strong>活动路线、地图和生活方式内容。</figcaption>
           </figure>
           <figure class="preview-shot">
-            <img src="previews/action.jpg" alt="Anime martial arts duel generated preview">
-            <figcaption><strong>动漫动作场景</strong>角色、光影、动作和构图测试。</figcaption>
+            <img src="previews/action.jpg" alt="动漫武打动作场景生成预览">
+            <figcaption><strong>Action scene</strong>角色、光影、动作和构图测试。</figcaption>
           </figure>
           <figure class="preview-shot">
-            <img src="previews/info.jpg" alt="3D stone steps evolution infographic generated preview">
-            <figcaption><strong>3D 演化信息图</strong>流程、阶段、路线图和概念解释。</figcaption>
+            <img src="previews/info.jpg" alt="3D 石阶演化信息图生成预览">
+            <figcaption><strong>Infographic</strong>流程、阶段、路线图和概念解释。</figcaption>
           </figure>
           <figure class="preview-shot">
-            <img src="previews/portrait.jpg" alt="Futuristic holographic portrait generated preview">
-            <figcaption><strong>未来感全息肖像</strong>头像、封面和视觉风格探索。</figcaption>
+            <img src="previews/portrait.jpg" alt="未来感全息人物肖像生成预览">
+            <figcaption><strong>Hologram portrait</strong>头像、封面和视觉风格探索。</figcaption>
           </figure>
         </div>
         <p class="preview-note">Preview images synced from <a href="https://github.com/YouMind-OpenLab/awesome-gpt-image-2">YouMind-OpenLab/awesome-gpt-image-2</a>, licensed under CC BY 4.0.</p>
@@ -463,8 +902,8 @@
     <section id="how">
       <div class="wrap">
         <div class="section-heading">
-          <h2>从 Skill 到本地文件。</h2>
-          <p class="lead">浏览器只负责操作体验，真正的 API 调用和文件保存都由本地 Node 服务处理。</p>
+          <h2>从 Skill 到 <span class="accent">本地文件</span></h2>
+          <p class="lead">浏览器负责操作体验，真正的 API 调用和文件保存都由本地 Node 服务处理。</p>
         </div>
         <div class="flow">
           <div class="flow-step"><span>01</span><strong>Choose skill</strong><p>选一个场景，替换占位词，或者把英文案例翻译为中文。</p></div>
@@ -478,7 +917,7 @@
     <section class="download-band">
       <div class="wrap download-inner">
         <div>
-          <h2>把 GPT Image 2 变成本地创作桌面。</h2>
+          <h2>把 GPT Image 2 变成 <span class="accent">本地创作终端</span></h2>
           <p class="lead">一键启动 Node 服务，浏览器打开控制台，开始生成和整理自己的图片库。</p>
         </div>
         <div class="actions">
